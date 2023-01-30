@@ -1,0 +1,15 @@
+{
+  "lang_W": ["ar", "en"],
+  "title_seo": "Buy By",
+  "description_seo": "",
+  "components": {
+    "test": {
+      "title": "Test Component"
+    }
+  },
+  "pages": {
+    "home_page": {
+      "title": "Home Page"
+    }
+  }
+}
