@@ -2,6 +2,7 @@ import { extractErrorMsgFromResponse } from "utils/apiHelpers";
 import { toast } from "react-toastify";
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 import * as actions from "./Actions";
+import * as drawerActions from "@/modules/drawer/Actions";
 import * as api from "./Api";
 import Types from "./Types";
 
@@ -61,7 +62,8 @@ function* createNotification(formData) {
     yield put(actions.controlNotificationsLoading(true));
     const result = yield call(api.createNotification, formData.payload);
     yield put(actions.createNotificationSuccess(result.data));
-    window.location.reload();
+    yield put(drawerActions.drawerActionToggle(false, "", "notifications"));
+    toast.success("Notification created successfully.");
   } catch (error) {
     extractErrorMsgFromResponse(error);
   } finally {

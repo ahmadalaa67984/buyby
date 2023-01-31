@@ -24,6 +24,12 @@ export default function notifications(state = INITIAL_STATE, action) {
         numberOfNotifications: payload.count,
       };
     }
+    case Types.CREATE_NOTIFICATIONS_SUCCESS: {
+      return {
+        ...state,
+        notifications: [action.payload, ...state.notifications],
+      };
+    }
     case Types.GET_NOTIFICATIONS_SUCCESS: {
       return {
         ...state,

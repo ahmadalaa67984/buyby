@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   businessAccs: [],
   numberOfBusinessAcc: 0,
   isLoading: false,
+  singleUser: {},
 };
 
 export default function businessAccs(state = INITIAL_STATE, action) {
@@ -14,6 +15,12 @@ export default function businessAccs(state = INITIAL_STATE, action) {
         ...state,
         businessAccs: payload.content,
         numberOfBusinessAcc: payload.count,
+      };
+    }
+    case Types.GET_BUSINESS_ACC_SUCCESS: {
+      return {
+        ...state,
+        singleUser: payload,
       };
     }
     case Types.BUSINESS_LOADING: {

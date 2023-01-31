@@ -58,5 +58,21 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       subMenu: [],
       active: pathName?.includes("business-reports"),
     },
+    {
+      icon: "/images/brand.png",
+      name: "Subscriptions",
+      link: "/subscription-reports/1",
+      count: -1,
+      subMenu: [],
+      active: pathName?.includes("subscription-reports"),
+    },
+    {
+      icon: "/images/brand.png",
+      name: "Manage Admins",
+      link: "/manage-admins/1",
+      count: -1,
+      subMenu: [],
+      active: pathName?.includes("manage-admins"),
+    },
   ];
 };

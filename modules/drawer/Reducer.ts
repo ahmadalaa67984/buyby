@@ -1,3 +1,4 @@
+import { IDrawer } from "./Interfaces";
 import Types from "./Types";
 
 const INITIAL_STATE = {
@@ -5,7 +6,7 @@ const INITIAL_STATE = {
     isOpen: false,
     type: "",
     component: "",
-  },
+  } as IDrawer,
 };
 
 export default function cashDrawer(

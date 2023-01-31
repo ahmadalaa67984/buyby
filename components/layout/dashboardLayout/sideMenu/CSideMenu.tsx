@@ -21,7 +21,7 @@ const CSideMenu = ({ sideWidth, sideActive, setSidActive }) => {
       // boxShadow="xl"
       position='relative'
       transition='all 0.5s'>
-      <Button
+      {/* <Button
         zIndex={1000}
         position='absolute'
         right={-5}
@@ -34,7 +34,7 @@ const CSideMenu = ({ sideWidth, sideActive, setSidActive }) => {
           bg='primary'
           borderRadius='50%'
         />
-      </Button>
+      </Button> */}
       <Box>
         {menuData(router?.asPath, "", "").map((data, index) => (
           <CSideMenuItem sideActive={sideActive} {...data} key={index} />

@@ -43,9 +43,16 @@ const NotificationDetailsModal = ({ item, detailsModal, setDetailsModal }) => {
                   <Td>{item?.notificationData?.title}</Td>
                   <Td>{item?.notificationData?.body}</Td>
                   <Td color='blue.500'>
-                    <a href={item?.notificationData?.imageUrl} target='_blank'>
-                      Got to image
-                    </a>
+                    {item?.notificationData?.imageUrl ? (
+                      <a
+                        href={item?.notificationData?.imageUrl}
+                        target='_blank'
+                        rel='noopener noreferrer'>
+                        Got to image
+                      </a>
+                    ) : (
+                      "No image provided"
+                    )}
                   </Td>
                 </Tr>
               </Tbody>

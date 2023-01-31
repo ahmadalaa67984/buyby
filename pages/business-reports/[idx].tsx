@@ -36,11 +36,9 @@ import { BiPencil } from "react-icons/bi";
 import { CgEyeAlt } from "react-icons/cg";
 import { HiDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { DateRangePicker } from "react-date-range";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
 import moment from "moment";
 import { getAllBusinessReportsRequest } from "@/modules/business-reports/Actions";
+import AdminAuth from "@/components/auth/AdminAuth";
 
 const BusinessReports = (props) => {
   const router = useRouter();
@@ -51,8 +49,13 @@ const BusinessReports = (props) => {
   const [filterLength, setFilterLength] = useState(0);
   const [dir, setDir] = useState("asc");
   const [sort, setSort] = useState("createdAt");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [stateOfDate, setStateOfDate] = useState([
+    {
+      startDate: null,
+      endDate: null,
+      key: "selection",
+    },
+  ]);
   const [selected, setSelected] = useState<any>();
   const [isDateRangeVisible, setIsDateRangeVisible] = useState(false);
   // Check if the tables have data before search
@@ -82,13 +85,22 @@ const BusinessReports = (props) => {
   useEffect(() => {
     dispatch(
       getAllBusinessReportsRequest({
-        // dir,
-        // sort,
-        filterByDateFrom: moment(startDate).format(),
-        filterByDateTo: moment(endDate).format(),
+        filterByDateFrom: moment(new Date()).subtract(1, "month").add(1, "day"),
+        filterByDateTo: moment(new Date()).format(),
       })
     );
-  }, [startDate, endDate]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (stateOfDate[0].startDate && stateOfDate[0].endDate) {
+      dispatch(
+        getAllBusinessReportsRequest({
+          filterByDateFrom: moment(stateOfDate[0].startDate).format(),
+          filterByDateTo: moment(stateOfDate[0].endDate).format(),
+        })
+      );
+    }
+  }, [stateOfDate]);
 
   const data = businessReports?.map((user: any) => {
     return {
@@ -118,22 +130,6 @@ const BusinessReports = (props) => {
           <Radio value='updatedAt'>By update</Radio>
         </Stack>
       </RadioGroup>
-      <Divider p='2' mb='2' />
-      <Text as='b'>Sort in range</Text>
-      <Box mt={"3"}>
-        <Text p='1'>From:</Text>
-        <Input
-          type={"date"}
-          onChange={(e) => setStartDate(e.target.valueAsDate)}
-        />
-      </Box>
-      <Box>
-        <Text p='1'>To:</Text>
-        <Input
-          type={"date"}
-          onChange={(e) => setEndDate(e.target.valueAsDate)}
-        />
-      </Box>
     </Box>
   );
 
@@ -200,102 +196,93 @@ const BusinessReports = (props) => {
   //   );
   // };
 
-  console.log({ businessReports, startDate, endDate });
   const totalPage = 2;
 
-  const handleSelect = (ranges) => {
-    setStartDate(ranges.selection.startDate);
-    setEndDate(ranges.selection.endDate);
-  };
-
-  const selectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
-  };
-
   return (
-    <CDashboardLayout
-      title='Business Reports'
-      description='Business Reports'
-      count={""}>
-      {parseInt(props.query.idx) <= 0 ||
-      totalPage < parseInt(props.query.idx) ? (
-        <Flex
-          w='100%'
-          h='80vh'
-          align='center'
-          justify='center'
-          direction='column'>
-          <Heading size='lg'>Business Reports</Heading>
-          <Button
-            color='blue100'
-            bg='blue500'
-            mt='5'
-            onClick={() => {
-              router.push({
-                pathname: router.pathname,
-                query: { ...router.query, idx: 1 },
-              });
-            }}>
-            Back to Business Reports
-          </Button>
-        </Flex>
-      ) : (
-        <Box bg='#f4f6f9' minH='600px'>
-          {isDateRangeVisible && (
-            <Box position={"absolute"} top='16%' left='18.5%'>
-              <DateRangePicker
-                ranges={[selectionRange]}
-                onChange={handleSelect}
-              />
-            </Box>
-          )}
-          <Box p={8}>
+    <AdminAuth>
+      <CDashboardLayout
+        title='Business Reports'
+        description='Business Reports'
+        count={""}>
+        {parseInt(props.query.idx) <= 0 ||
+        totalPage < parseInt(props.query.idx) ? (
+          <Flex
+            w='100%'
+            h='80vh'
+            align='center'
+            justify='center'
+            direction='column'>
+            <Heading size='lg'>Business Reports</Heading>
             <Button
-              colorScheme={"primaryColorScheme"}
-              onClick={() => setIsDateRangeVisible((prev) => !prev)}>
-              Choose Date Range
+              color='blue100'
+              bg='blue500'
+              mt='5'
+              onClick={() => {
+                router.push({
+                  pathname: router.pathname,
+                  query: { ...router.query, idx: 1 },
+                });
+              }}>
+              Back to Business Reports
             </Button>
+          </Flex>
+        ) : (
+          <Box bg='#f4f6f9' minH='600px'>
+            <Heading p={8}>Business Reports</Heading>
+            {isDateRangeVisible && (
+              <Box position={"absolute"} top='20%' left='17.8%'>
+                <DateRange
+                  stateOfDate={stateOfDate}
+                  setStateOfDate={setStateOfDate}
+                />
+              </Box>
+            )}
+            <Box position={"absolute"} top='16%' left='17.8%'>
+              <Button
+                colorScheme={"primaryColorScheme"}
+                onClick={() => setIsDateRangeVisible((prev) => !prev)}>
+                Choose Date Range
+              </Button>
+            </Box>
+            {/* {data?.length === 0 && !isDataBefore && <CustomersReportsEmptyPage />} */}
+            {isLoading && <Progress size='xs' isIndeterminate />}
+            {data?.length > 0 && (
+              <CTable
+                selectedData={viewData}
+                footerBtnTitle={false}
+                noSearchBar={false}
+                noFilter={false}
+                filterList={filterList}
+                filterLength={filterLength}
+                filterType={null}
+                Data={data}
+                Columns={columns}
+                Actions={<></>}
+                // ActionsData={(data) => actions(data)}
+                Title='Business Reports Management'
+                subTitle={`Search, view business reports.`}
+                btnTitle=''
+                placeHolder='Search for business reports...'
+                setPage={setPage}
+                setPerPage={setPerPage}
+                currentpage={pageNumber}
+                setPageNumber={setPageNumber}
+                perPage={size}
+                totalPage={
+                  // Math.ceil(tablesNumber.length / 10)
+                  //   ? Math.ceil(tablesNumber.length / 10)
+                  //   : 1
+                  2
+                }
+                searchFn={getAllBusinessReportsRequest}
+                idx={parseInt(props.query.idx)}
+                headerChildren={undefined}
+              />
+            )}
           </Box>
-          {/* {data?.length === 0 && !isDataBefore && <CustomersReportsEmptyPage />} */}
-          {isLoading && <Progress size='xs' isIndeterminate />}
-          {data?.length > 0 && (
-            <CTable
-              selectedData={viewData}
-              footerBtnTitle={false}
-              noSearchBar={false}
-              noFilter={false}
-              filterList={filterList}
-              filterLength={filterLength}
-              filterType={null}
-              Data={data}
-              Columns={columns}
-              Actions={<></>}
-              // ActionsData={(data) => actions(data)}
-              Title='Business Reports Management'
-              subTitle={`Search, view business reports.`}
-              btnTitle=''
-              placeHolder='Search for business reports...'
-              setPage={setPage}
-              setPerPage={setPerPage}
-              currentpage={pageNumber}
-              setPageNumber={setPageNumber}
-              perPage={size}
-              totalPage={
-                // Math.ceil(tablesNumber.length / 10)
-                //   ? Math.ceil(tablesNumber.length / 10)
-                //   : 1
-                2
-              }
-              searchFn={getAllBusinessReportsRequest}
-              idx={parseInt(props.query.idx)}
-              headerChildren={undefined}
-            />
-          )}
-        </Box>
-      )}
-    </CDashboardLayout>
+        )}
+      </CDashboardLayout>
+    </AdminAuth>
   );
 };
 

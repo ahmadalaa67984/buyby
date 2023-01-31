@@ -74,9 +74,10 @@ function* applyRecievePromotion(formData) {
     yield put(actions.controlCustomersLoading(true));
     const result = yield call(api.applyRecievePromotion, formData.payload);
     yield put(actions.applyRecievePromotionSuccess(result.data));
-    window.location.reload();
+    // window.location.reload();
   } catch (error) {
-    extractErrorMsgFromResponse(error);
+    console.log({ error });
+    // extractErrorMsgFromResponse(error);
   } finally {
     yield put(actions.controlCustomersLoading(false));
   }

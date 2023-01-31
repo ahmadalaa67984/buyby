@@ -3,7 +3,7 @@ import { Button, Container, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { IoIosAdd } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
-const LogsEmptyPage = () => {
+const NotificationsEmptyPage = () => {
   const dispatch = useDispatch();
 
   return (
@@ -57,4 +57,4 @@ const LogsEmptyPage = () => {
   );
 };
 
-export default LogsEmptyPage;
+export default NotificationsEmptyPage;

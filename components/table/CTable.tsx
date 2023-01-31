@@ -186,7 +186,7 @@ const CTable = ({
               </Tr>
             ))}
           </Thead>
-          <Tbody {...getTableBodyProps()} color='black' boxShadow={"md"}>
+          <Tbody {...getTableBodyProps()} color='black'>
             {page?.map((row) => {
               prepareRow(row);
 

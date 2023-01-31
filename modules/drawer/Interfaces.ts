@@ -1,4 +1,4 @@
-export interface ICloneBranchAction {
+export interface IDrawer {
   isOpen: boolean;
   type: string;
   component: string;

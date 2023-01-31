@@ -39,6 +39,9 @@ import CreateButton from "@/components/core/buttons/CreateButton";
 import ActionsNotifications from "@/components/drawers/notifications/ActionsNotifications";
 import UserNotificationsModal from "@/components/core/modals/UserNotificationsModal";
 import axios from "axios";
+import NotificationsEmptyPage from "@/components/tablesData/notifications/NotificationsEmptyPage";
+import { INotification } from "@/modules/notifications/interface";
+import AdminAuth from "@/components/auth/AdminAuth";
 
 const NotificationsPage = (props) => {
   const router = useRouter();
@@ -70,10 +73,12 @@ const NotificationsPage = (props) => {
     if (selectedUser) {
       dispatch(
         getAllUserNotificationsRequest({
-          offset: (parseInt(props.query.idx) - 1) * 10,
-          size,
-          searchTerm: router.query.search,
-          // userId: selectedUser,
+          id: selectedUser,
+          formData: {
+            offset: (parseInt(props.query.idx) - 1) * 10,
+            size,
+            searchTerm: router.query.search,
+          },
         })
       );
     } else {
@@ -95,10 +100,16 @@ const NotificationsPage = (props) => {
     if (selectedUser) {
       dispatch(
         getAllUserNotificationsRequest({
-          offset: (parseInt(props.query.idx) - 1) * 10,
-          size,
-          searchTerm: router.query.search,
-          // userId: selectedUser,
+          id: selectedUser,
+          formData: {
+            offset: (parseInt(props.query.idx) - 1) * 10,
+            size,
+            searchTerm: router.query.search,
+            dir,
+            sort,
+            filterByDateFrom: startDate,
+            filterByDateTo: endDate,
+          },
         })
       );
     } else {
@@ -122,7 +133,7 @@ const NotificationsPage = (props) => {
     setDetailsModal(!detailsModal);
   };
 
-  const data = notifications?.map((notify: any) => {
+  const data = notifications?.map((notify: INotification) => {
     return {
       ...notify,
       id: notify?._id,
@@ -130,7 +141,10 @@ const NotificationsPage = (props) => {
       body: notify?.notificationData?.body,
       imageUrl: (
         <Box color='blue.500'>
-          <a href={notify?.notificationData?.imageUrl} target='_blank'>
+          <a
+            href={notify?.notificationData?.imageUrl}
+            target='_blank'
+            rel='noopener noreferrer'>
             {notify?.notificationData?.imageUrl}
           </a>
         </Box>
@@ -138,11 +152,11 @@ const NotificationsPage = (props) => {
     };
   });
 
-  const users = [];
-  const uniqueUserIds = [...new Set(notifications.map((n) => n?.userId))];
-  notifications?.map((n) => users.push({ id: n?.userId, name: n?.userName }));
+  let users = [
+    ...new Map(notifications?.map((item) => [item["userId"], item])).values(),
+  ];
 
-  console.log({ notifications, users, uniqueUserIds });
+  console.log({ notifications, selectedUser });
 
   const filterList = (
     <Box p='5'>
@@ -178,7 +192,11 @@ const NotificationsPage = (props) => {
         />
       </Box>
       <Box mt={4}>
+        <Text as='b' p={"1"}>
+          User Notifications
+        </Text>
         <Select
+          mt={2}
           placeholder='Select user'
           value={selectedUser}
           onChange={(e) => {
@@ -186,8 +204,8 @@ const NotificationsPage = (props) => {
             console.log(e.target.value);
           }}>
           {users?.map((user: any) => (
-            <option key={user?.id} value={user?.id}>
-              {user?.id}
+            <option key={user?.userId} value={user?.userId}>
+              {user?.userName}
             </option>
           ))}
         </Select>
@@ -262,51 +280,56 @@ const NotificationsPage = (props) => {
   console.log({ props });
 
   return (
-    <CDashboardLayout
-      title='Notifications'
-      description='Notifications'
-      count={""}>
-      <CTable
-        selectedData={viewData}
-        footerBtnTitle={false}
-        noSearchBar={false}
-        noFilter={false}
-        filterList={filterList}
-        filterLength={filterLength}
-        filterType={null}
-        Data={data}
-        Columns={columns}
-        Actions={<></>}
-        ActionsData={(data) => actions(data)}
-        Title='Notifications Management'
-        subTitle={`Create, search, view and delete notifications.`}
-        btnTitle=''
-        placeHolder='Search for notifications...'
-        setPage={setPage}
-        setPerPage={setPerPage}
-        currentpage={pageNumber}
-        setPageNumber={setPageNumber}
-        perPage={size}
-        totalPage={
-          // Math.ceil(tablesNumber.length / 10)
-          //   ? Math.ceil(tablesNumber.length / 10)
-          //   : 1
-          2
-        }
-        searchFn={getAllNotificationsRequest}
-        idx={parseInt(props.query.idx)}
-        headerChildren={() => (
-          <>
-            <CreateButton
-              btnTitle='Create Notification'
-              onClick={() =>
-                dispatch(drawerActionToggle(true, "New", "notification"))
-              }
-            />
-          </>
-        )}
-      />
-      {/* {parseInt(props.query.idx) <= 0 ||
+    <AdminAuth>
+      <CDashboardLayout
+        title='Notifications'
+        description='Notifications'
+        count={""}>
+        <CTable
+          selectedData={viewData}
+          footerBtnTitle={false}
+          noSearchBar={false}
+          noFilter={false}
+          filterList={filterList}
+          filterLength={filterLength}
+          filterType={null}
+          Data={data}
+          Columns={columns}
+          Actions={<></>}
+          ActionsData={(data) => actions(data)}
+          Title='Notifications Management'
+          subTitle={`Create, search, view and delete notifications.`}
+          btnTitle=''
+          placeHolder='Search for notifications...'
+          setPage={setPage}
+          setPerPage={setPerPage}
+          currentpage={pageNumber}
+          setPageNumber={setPageNumber}
+          perPage={size}
+          totalPage={
+            // Math.ceil(tablesNumber.length / 10)
+            //   ? Math.ceil(tablesNumber.length / 10)
+            //   : 1
+            2
+          }
+          searchFn={
+            selectedUser
+              ? getAllNotificationsRequest
+              : getAllNotificationsRequest
+          }
+          idx={parseInt(props.query.idx)}
+          headerChildren={() => (
+            <>
+              <CreateButton
+                btnTitle='Create Notification'
+                onClick={() =>
+                  dispatch(drawerActionToggle(true, "New", "notification"))
+                }
+              />
+            </>
+          )}
+        />
+        {/* {parseInt(props.query.idx) <= 0 ||
       totalPage < parseInt(props.query.idx) ? (
         <Flex
           w='100%'
@@ -330,7 +353,7 @@ const NotificationsPage = (props) => {
         </Flex>
       ) : (
         <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <NotificationsPage />}
+          {data?.length === 0 && !isDataBefore && <NotificationsEmptyPage />}
           {isLoading && <Progress size='xs' isIndeterminate />}
 
           {isDataBefore && (
@@ -377,24 +400,25 @@ const NotificationsPage = (props) => {
           )}
         </Box>
       )} */}
-      <ActionsNotifications />
-      <DeleteModel
-        name={singleNotification?.action}
-        deleteModal={deleteModal}
-        setDeleteModal={setDeleteModal}
-        onSubmit={onSubmitDelete}
-      />
-      <NotificationDetailsModal
-        detailsModal={detailsModal}
-        setDetailsModal={setDetailsModal}
-        item={singleNotification}
-      />
-      {/* <UserNotificationsModal
+        <ActionsNotifications />
+        <DeleteModel
+          name={singleNotification?.action}
+          deleteModal={deleteModal}
+          setDeleteModal={setDeleteModal}
+          onSubmit={onSubmitDelete}
+        />
+        <NotificationDetailsModal
+          detailsModal={detailsModal}
+          setDetailsModal={setDetailsModal}
+          item={singleNotification}
+        />
+        {/* <UserNotificationsModal
         userNotificationsModal={userNotificationsModal}
         setUserNotificationsModal={setUserNotificationsModal}
         userNotifications={userNotifications}
       /> */}
-    </CDashboardLayout>
+      </CDashboardLayout>
+    </AdminAuth>
   );
 };
 
