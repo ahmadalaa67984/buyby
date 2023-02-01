@@ -1,3 +1,4 @@
+import AdminAuth from "@/components/auth/AdminAuth";
 import CreateButton from "@/components/core/buttons/CreateButton";
 import ActionsCustomers from "@/components/drawers/customers/ActionsCustomers";
 import CDashboardLayout from "@/components/layout/dashboardLayout/CDashboardLayout";
@@ -8,6 +9,7 @@ import {
   getAllCustomerRequest,
   getCustomerRequest,
 } from "@/modules/customer-accs/Actions";
+import { ICustomer } from "@/modules/customer-accs/interface";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import { RootState } from "@/services/combinedReducers";
 import {
@@ -32,6 +34,7 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BiPencil } from "react-icons/bi";
@@ -93,7 +96,25 @@ const CustomerAccounts = (props) => {
   //   setDetailsModal(!detailsModal);
   // };
 
-  const data = customerAccs?.map((user: any) => {
+  const handlePromotion = async ({
+    id,
+    receivePromotionalMessagesOrDiscounts,
+  }: {
+    id: string;
+    receivePromotionalMessagesOrDiscounts: boolean;
+  }) => {
+    try {
+      await axios.patch(`users/update-promotional-messages-discounts/${id}`, {
+        receivePromotionalMessagesOrDiscounts,
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const data = customerAccs?.map((user: ICustomer) => {
     return {
       ...user,
       id: user?._id,
@@ -105,14 +126,12 @@ const CustomerAccounts = (props) => {
         <Box color='blue.500'>
           <FormControl display='flex' alignItems='center'>
             <Switch
-              checked={user?.receivePromotionalMessagesOrDiscounts}
+              isChecked={user?.receivePromotionalMessagesOrDiscounts}
               onChange={(e) => {
-                dispatch(
-                  applyRecievePromotionRequest({
-                    selected,
-                    receivePromotionalMessagesOrDiscounts: e.target.checked,
-                  })
-                );
+                handlePromotion({
+                  id: user?._id,
+                  receivePromotionalMessagesOrDiscounts: e.target.checked,
+                });
               }}
             />
           </FormControl>
@@ -224,77 +243,79 @@ const CustomerAccounts = (props) => {
   //   );
   // };
 
-  console.log({ customerAccs, isRecievePromotional });
+  console.log({ customerAccs });
   const totalPage = 2;
 
   return (
-    <CDashboardLayout
-      title='Customer Accounts'
-      description='Customer Accounts'
-      count={""}>
-      {parseInt(props.query.idx) <= 0 ||
-      totalPage < parseInt(props.query.idx) ? (
-        <Flex
-          w='100%'
-          h='80vh'
-          align='center'
-          justify='center'
-          direction='column'>
-          <Heading size='lg'>Customer Accounts</Heading>
-          <Button
-            color='blue100'
-            bg='blue500'
-            mt='5'
-            onClick={() => {
-              router.push({
-                pathname: router.pathname,
-                query: { ...router.query, idx: 1 },
-              });
-            }}>
-            Back to Customer Accounts
-          </Button>
-        </Flex>
-      ) : (
-        <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <CustomersEmptyPage />}
-          {isLoading && <Progress size='xs' isIndeterminate />}
+    <AdminAuth>
+      <CDashboardLayout
+        title='Customer Accounts'
+        description='Customer Accounts'
+        count={""}>
+        {parseInt(props.query.idx) <= 0 ||
+        totalPage < parseInt(props.query.idx) ? (
+          <Flex
+            w='100%'
+            h='80vh'
+            align='center'
+            justify='center'
+            direction='column'>
+            <Heading size='lg'>Customer Accounts</Heading>
+            <Button
+              color='blue100'
+              bg='blue500'
+              mt='5'
+              onClick={() => {
+                router.push({
+                  pathname: router.pathname,
+                  query: { ...router.query, idx: 1 },
+                });
+              }}>
+              Back to Customer Accounts
+            </Button>
+          </Flex>
+        ) : (
+          <Box bg='#f4f6f9' minH='600px'>
+            {data?.length === 0 && !isDataBefore && <CustomersEmptyPage />}
+            {isLoading && <Progress size='xs' isIndeterminate />}
 
-          {isDataBefore && (
-            <CTable
-              selectedData={viewData}
-              footerBtnTitle={false}
-              noSearchBar={false}
-              noFilter={false}
-              filterList={filterList}
-              filterLength={filterLength}
-              filterType={null}
-              Data={data}
-              Columns={columns}
-              Actions={<></>}
-              // ActionsData={(data) => actions(data)}
-              Title='Customers Management'
-              subTitle={`Search, view customers.`}
-              btnTitle=''
-              placeHolder='Search for customers...'
-              setPage={setPage}
-              setPerPage={setPerPage}
-              currentpage={pageNumber}
-              setPageNumber={setPageNumber}
-              perPage={size}
-              totalPage={
-                // Math.ceil(tablesNumber.length / 10)
-                //   ? Math.ceil(tablesNumber.length / 10)
-                //   : 1
-                2
-              }
-              searchFn={getAllCustomerRequest}
-              idx={parseInt(props.query.idx)}
-              headerChildren={undefined}
-            />
-          )}
-        </Box>
-      )}
-    </CDashboardLayout>
+            {isDataBefore && (
+              <CTable
+                selectedData={viewData}
+                footerBtnTitle={false}
+                noSearchBar={false}
+                noFilter={false}
+                filterList={filterList}
+                filterLength={filterLength}
+                filterType={null}
+                Data={data}
+                Columns={columns}
+                Actions={<></>}
+                // ActionsData={(data) => actions(data)}
+                Title='Customers Management'
+                subTitle={`Search, view customers.`}
+                btnTitle=''
+                placeHolder='Search for customers...'
+                setPage={setPage}
+                setPerPage={setPerPage}
+                currentpage={pageNumber}
+                setPageNumber={setPageNumber}
+                perPage={size}
+                totalPage={
+                  // Math.ceil(tablesNumber.length / 10)
+                  //   ? Math.ceil(tablesNumber.length / 10)
+                  //   : 1
+                  2
+                }
+                searchFn={getAllCustomerRequest}
+                idx={parseInt(props.query.idx)}
+                headerChildren={undefined}
+              />
+            )}
+          </Box>
+        )}
+      </CDashboardLayout>
+    </AdminAuth>
   );
 };
 

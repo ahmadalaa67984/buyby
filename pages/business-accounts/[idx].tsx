@@ -4,7 +4,11 @@ import CDashboardLayout from "@/components/layout/dashboardLayout/CDashboardLayo
 import CTable from "@/components/table/CTable";
 import BusinessEmptyPage from "@/components/tablesData/business/BusinessEmptyPage";
 import CustomersEmptyPage from "@/components/tablesData/customers/CustomersEmptyPage";
-import { getAllBusinessAccountsRequest } from "@/modules/business-accs/Actions";
+import {
+  getAllBusinessAccountsRequest,
+  getUserByIdRequest,
+} from "@/modules/business-accs/Actions";
+import { IBusiness } from "@/modules/business-accs/interface";
 import {
   getAllCustomerRequest,
   getCustomerRequest,
@@ -35,6 +39,9 @@ import { useEffect, useState } from "react";
 import { CgEyeAlt } from "react-icons/cg";
 import { HiDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
+import DetailsModal from "@/components/core/modals/DetailsModal";
+import BusinessAccountModal from "@/components/core/modals/BusinessAccountModal";
+import AdminAuth from "@/components/auth/AdminAuth";
 
 const BusinessAccounts = (props) => {
   const router = useRouter();
@@ -55,7 +62,7 @@ const BusinessAccounts = (props) => {
     setSelected(data);
   };
 
-  const { businessAccs, isLoading } = useSelector(
+  const { businessAccs, isLoading, singleUser } = useSelector(
     (state: RootState) => state.bussines
   );
 
@@ -84,21 +91,22 @@ const BusinessAccounts = (props) => {
     );
   }, [dir, sort, startDate, endDate]);
 
-  // const handleDetails = () => {
-  //   dispatch(getCustomerRequest(selected));
-  //   setDetailsModal(!detailsModal);
-  // };
+  console.log({ selected });
+  const handleDetails = () => {
+    dispatch(getUserByIdRequest(selected));
+    setDetailsModal(!detailsModal);
+  };
 
-  const data = businessAccs?.map((b: any) => {
+  const data = businessAccs?.map((b: IBusiness) => {
     return {
       ...b,
       id: b?._id,
       bname: b?.name,
       address: b?.address,
-      type: b?.subscriptionType,
+      // type: b?.subscriptionType,
       cphone: b?.phoneNumber,
       rnumber: b?.registrationNumber,
-      taxId: b?.taxID,
+      // taxId: b?.taxID,
     };
   });
 
@@ -147,10 +155,10 @@ const BusinessAccounts = (props) => {
       Header: "Address",
       accessor: "address",
     },
-    {
-      Header: "Type",
-      accessor: "type",
-    },
+    // {
+    //   Header: "Type",
+    //   accessor: "type",
+    // },
     {
       Header: "Contact Phone",
       accessor: "cphone",
@@ -159,131 +167,138 @@ const BusinessAccounts = (props) => {
       Header: "Register Number",
       accessor: "rnumber",
     },
-    {
-      Header: "Tax ID",
-      accessor: "taxId",
-    },
     // {
-    //   Header: "",
-    //   accessor: "Actions",
+    //   Header: "Tax ID",
+    //   accessor: "taxId",
     // },
+    {
+      Header: "",
+      accessor: "Actions",
+    },
   ];
 
-  //   const actions = (data) => {
-  //     return (
-  //       <Flex justify='space-between'>
-  //         <Menu>
-  //           <MenuButton
-  //             as={IconButton}
-  //             aria-label='Title'
-  //             icon={<HiDotsVertical />}
-  //             size='sm'
-  //             fontSize='20px'
-  //             variant='outline'
-  //             border='none'
-  //           />
-  //           <MenuList p={0}>
-  //             <MenuItem
-  //               p={3}
-  //               fontWeight='black'
-  //               _hover={{
-  //                 bg: "gray.200",
-  //                 color: "blue.500",
-  //               }}
-  //               icon={<CgEyeAlt fontSize='25px' color='#126890' />}
-  //               onClick={() => handleDetails()}>
-  //               See Details
-  //             </MenuItem>
-  //             <MenuItem
-  //               p={3}
-  //               fontWeight='black'
-  //               _hover={{
-  //                 bg: "gray.200",
-  //                 color: "blue.500",
-  //               }}
-  //               icon={<CgEyeAlt fontSize='25px' color='#126890' />}
-  //               onClick={() =>
-  //                 dispatch(drawerActionToggle(true, "EDIT", "customers"))
-  //               }>
-  //               Edit
-  //             </MenuItem>
-  //           </MenuList>
-  //         </Menu>
-  //       </Flex>
-  //     );
-  //   };
+  const actions = (data) => {
+    return (
+      <Flex justify='space-between'>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            aria-label='Title'
+            icon={<HiDotsVertical />}
+            size='sm'
+            fontSize='20px'
+            variant='outline'
+            border='none'
+          />
+          <MenuList p={0}>
+            <MenuItem
+              p={3}
+              fontWeight='black'
+              _hover={{
+                bg: "gray.200",
+                color: "blue.500",
+              }}
+              icon={<CgEyeAlt fontSize='25px' color='#126890' />}
+              onClick={() => handleDetails()}>
+              See Details
+            </MenuItem>
+            {/* <MenuItem
+                p={3}
+                fontWeight='black'
+                _hover={{
+                  bg: "gray.200",
+                  color: "blue.500",
+                }}
+                icon={<CgEyeAlt fontSize='25px' color='#126890' />}
+                onClick={() =>
+                  dispatch(drawerActionToggle(true, "EDIT", "customers"))
+                }>
+                Edit
+              </MenuItem> */}
+          </MenuList>
+        </Menu>
+      </Flex>
+    );
+  };
 
-  console.log({ businessAccs });
+  console.log({ businessAccs, singleUser });
   const totalPage = 2;
 
   return (
-    <CDashboardLayout
-      title='Business Accounts'
-      description='Business Accounts'
-      count={""}>
-      {parseInt(props.query.idx) <= 0 ||
-      totalPage < parseInt(props.query.idx) ? (
-        <Flex
-          w='100%'
-          h='80vh'
-          align='center'
-          justify='center'
-          direction='column'>
-          <Heading size='lg'>Business Accounts</Heading>
-          <Button
-            color='blue100'
-            bg='blue500'
-            mt='5'
-            onClick={() => {
-              router.push({
-                pathname: router.pathname,
-                query: { ...router.query, idx: 1 },
-              });
-            }}>
-            Back to Business Accounts
-          </Button>
-        </Flex>
-      ) : (
-        <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <BusinessEmptyPage />}
-          {isLoading && <Progress size='xs' isIndeterminate />}
+    <AdminAuth>
+      <CDashboardLayout
+        title='Business Accounts'
+        description='Business Accounts'
+        count={""}>
+        {parseInt(props.query.idx) <= 0 ||
+        totalPage < parseInt(props.query.idx) ? (
+          <Flex
+            w='100%'
+            h='80vh'
+            align='center'
+            justify='center'
+            direction='column'>
+            <Heading size='lg'>Business Accounts</Heading>
+            <Button
+              color='blue100'
+              bg='blue500'
+              mt='5'
+              onClick={() => {
+                router.push({
+                  pathname: router.pathname,
+                  query: { ...router.query, idx: 1 },
+                });
+              }}>
+              Back to Business Accounts
+            </Button>
+          </Flex>
+        ) : (
+          <Box bg='#f4f6f9' minH='600px'>
+            {data?.length === 0 && !isDataBefore && <BusinessEmptyPage />}
+            {isLoading && <Progress size='xs' isIndeterminate />}
 
-          {isDataBefore && (
-            <CTable
-              selectedData={viewData}
-              footerBtnTitle={false}
-              noSearchBar={false}
-              noFilter={false}
-              filterList={filterList}
-              filterLength={filterLength}
-              filterType={null}
-              Data={data}
-              Columns={columns}
-              Actions={<></>}
-              //   ActionsData={(data) => actions(data)}
-              Title='Businesses Accounts Management'
-              subTitle={`Search, view business accounts.`}
-              btnTitle=''
-              placeHolder='Search for business accounts...'
-              setPage={setPage}
-              setPerPage={setPerPage}
-              currentpage={pageNumber}
-              setPageNumber={setPageNumber}
-              perPage={size}
-              totalPage={
-                // Math.ceil(tablesNumber.length / 10)
-                //   ? Math.ceil(tablesNumber.length / 10)
-                //   : 1
-                2
-              }
-              searchFn={getAllBusinessAccountsRequest}
-              idx={parseInt(props.query.idx)}
-              headerChildren={undefined}
-            />
-          )}
-        </Box>
-      )}
-    </CDashboardLayout>
+            {isDataBefore && (
+              <CTable
+                selectedData={viewData}
+                footerBtnTitle={false}
+                noSearchBar={false}
+                noFilter={false}
+                filterList={filterList}
+                filterLength={filterLength}
+                filterType={null}
+                Data={data}
+                Columns={columns}
+                Actions={<></>}
+                ActionsData={(data) => actions(data)}
+                Title='Businesses Accounts Management'
+                subTitle={`Search, view business accounts.`}
+                btnTitle=''
+                placeHolder='Search for business accounts...'
+                setPage={setPage}
+                setPerPage={setPerPage}
+                currentpage={pageNumber}
+                setPageNumber={setPageNumber}
+                perPage={size}
+                totalPage={
+                  // Math.ceil(tablesNumber.length / 10)
+                  //   ? Math.ceil(tablesNumber.length / 10)
+                  //   : 1
+                  2
+                }
+                searchFn={getAllBusinessAccountsRequest}
+                idx={parseInt(props.query.idx)}
+                headerChildren={undefined}
+              />
+            )}
+          </Box>
+        )}
+        <BusinessAccountModal
+          detailsModal={detailsModal}
+          setDetailsModal={setDetailsModal}
+          item={singleUser}
+        />
+      </CDashboardLayout>
+    </AdminAuth>
   );
 };
 

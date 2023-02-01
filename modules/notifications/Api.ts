@@ -4,8 +4,8 @@ export const getAllNotifications = (body) => {
   return axios.post(`/notification/search`, body);
 };
 
-export const getAllUserNotifications = (formData) => {
-  return axios.post(`/notification/search/${formData?.userId}`, formData);
+export const getAllUserNotifications = ({ id, formData }) => {
+  return axios.post(`/notification/search/${id}`, formData);
 };
 
 export const createNotification = (formData) => {

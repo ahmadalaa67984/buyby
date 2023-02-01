@@ -10,6 +10,16 @@ export const getAllBusinessAccountsSuccess = (data) => ({
   payload: data,
 });
 
+export const getUserByIdRequest = (body) => ({
+  type: Types.GET_BUSINESS_ACC_REQUEST,
+  payload: body,
+});
+
+export const getUserByIdSuccess = (data) => ({
+  type: Types.GET_BUSINESS_ACC_SUCCESS,
+  payload: data,
+});
+
 export const controlBussinesAccLoading = (isLoading: boolean) => ({
   type: Types.BUSINESS_LOADING,
   payload: isLoading,

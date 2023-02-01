@@ -32,6 +32,8 @@ import {
 import { RootState } from "@/services/combinedReducers";
 import DeleteModel from "@/components/core/modals/DeleteModel";
 import DetailsModal from "@/components/core/modals/DetailsModal";
+import { ISysLog } from "@/modules/system-logs/interface";
+import AdminAuth from "@/components/auth/AdminAuth";
 
 const SystemLogs = (props) => {
   const router = useRouter();
@@ -91,15 +93,15 @@ const SystemLogs = (props) => {
     setDetailsModal(!detailsModal);
   };
 
-  const data = sysLogs?.map((sysLog: any) => {
+  const data = sysLogs?.map((sysLog: ISysLog) => {
     return {
       ...sysLog,
       id: sysLog?._id,
       action: sysLog?.action,
       username: sysLog?.user?.name,
       email: sysLog?.user?.email,
-      role: sysLog?.user?.rol,
-      subscriptionType: sysLog?.user?.subscriptionType,
+      role: sysLog?.user?.role,
+      // subscriptionType: sysLog?.user?.subscriptionType,
     };
   });
 
@@ -158,10 +160,10 @@ const SystemLogs = (props) => {
       Header: "Role",
       accessor: "role",
     },
-    {
-      Header: "Subscription Type",
-      accessor: "subscriptionType",
-    },
+    // {
+    //   Header: "Subscription Type",
+    //   accessor: "subscriptionType",
+    // },
     {
       Header: "",
       accessor: "Actions",
@@ -214,81 +216,86 @@ const SystemLogs = (props) => {
   const totalPage = 2;
 
   return (
-    <CDashboardLayout title='System Logs' description='System Logs' count={""}>
-      {parseInt(props.query.idx) <= 0 ||
-      totalPage < parseInt(props.query.idx) ? (
-        <Flex
-          w='100%'
-          h='80vh'
-          align='center'
-          justify='center'
-          direction='column'>
-          <Heading size='lg'>System Logs</Heading>
-          <Button
-            color='blue100'
-            bg='blue500'
-            mt='5'
-            onClick={() => {
-              router.push({
-                pathname: router.pathname,
-                query: { ...router.query, idx: 1 },
-              });
-            }}>
-            Back to Logs
-          </Button>
-        </Flex>
-      ) : (
-        <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <LogsEmptyPage />}
-          {isLoading && <Progress size='xs' isIndeterminate />}
+    <AdminAuth>
+      <CDashboardLayout
+        title='System Logs'
+        description='System Logs'
+        count={""}>
+        {parseInt(props.query.idx) <= 0 ||
+        totalPage < parseInt(props.query.idx) ? (
+          <Flex
+            w='100%'
+            h='80vh'
+            align='center'
+            justify='center'
+            direction='column'>
+            <Heading size='lg'>System Logs</Heading>
+            <Button
+              color='blue100'
+              bg='blue500'
+              mt='5'
+              onClick={() => {
+                router.push({
+                  pathname: router.pathname,
+                  query: { ...router.query, idx: 1 },
+                });
+              }}>
+              Back to Logs
+            </Button>
+          </Flex>
+        ) : (
+          <Box bg='#f4f6f9' minH='600px'>
+            {data?.length === 0 && !isDataBefore && <LogsEmptyPage />}
+            {isLoading && <Progress size='xs' isIndeterminate />}
 
-          {isDataBefore && (
-            <CTable
-              selectedData={viewData}
-              footerBtnTitle={false}
-              noSearchBar={false}
-              noFilter={false}
-              filterList={filterList}
-              filterLength={filterLength}
-              filterType={null}
-              Data={data}
-              Columns={columns}
-              Actions={<></>}
-              ActionsData={(data) => actions(data)}
-              Title='System Logs Management'
-              subTitle={`Search, view and delete system logs.`}
-              btnTitle=''
-              placeHolder='Search for logs...'
-              setPage={setPage}
-              setPerPage={setPerPage}
-              currentpage={pageNumber}
-              setPageNumber={setPageNumber}
-              perPage={size}
-              totalPage={
-                // Math.ceil(tablesNumber.length / 10)
-                //   ? Math.ceil(tablesNumber.length / 10)
-                //   : 1
-                2
-              }
-              searchFn={getAllSystemLogsRequest}
-              idx={parseInt(props.query.idx)}
-              headerChildren={undefined}
-            />
-          )}
-        </Box>
-      )}
-      <DeleteModel
-        name={singleSysLog?.action}
-        deleteModal={deleteModal}
-        setDeleteModal={setDeleteModal}
-        onSubmit={onSubmitDelete}
-      />
-      <DetailsModal
-        detailsModal={detailsModal}
-        setDetailsModal={setDetailsModal}
-        item={singleSysLog}
-      />
-    </CDashboardLayout>
+            {isDataBefore && (
+              <CTable
+                selectedData={viewData}
+                footerBtnTitle={false}
+                noSearchBar={false}
+                noFilter={false}
+                filterList={filterList}
+                filterLength={filterLength}
+                filterType={null}
+                Data={data}
+                Columns={columns}
+                Actions={<></>}
+                ActionsData={(data) => actions(data)}
+                Title='System Logs Management'
+                subTitle={`Search, view and delete system logs.`}
+                btnTitle=''
+                placeHolder='Search for logs...'
+                setPage={setPage}
+                setPerPage={setPerPage}
+                currentpage={pageNumber}
+                setPageNumber={setPageNumber}
+                perPage={size}
+                totalPage={
+                  // Math.ceil(tablesNumber.length / 10)
+                  //   ? Math.ceil(tablesNumber.length / 10)
+                  //   : 1
+                  2
+                }
+                searchFn={getAllSystemLogsRequest}
+                idx={parseInt(props.query.idx)}
+                headerChildren={undefined}
+              />
+            )}
+          </Box>
+        )}
+        <DeleteModel
+          name={singleSysLog?.action}
+          deleteModal={deleteModal}
+          setDeleteModal={setDeleteModal}
+          onSubmit={onSubmitDelete}
+        />
+        <DetailsModal
+          detailsModal={detailsModal}
+          setDetailsModal={setDetailsModal}
+          item={singleSysLog}
+        />
+      </CDashboardLayout>
+    </AdminAuth>
   );
 };
 

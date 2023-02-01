@@ -68,13 +68,13 @@ const CSideMenuItem = ({
           w='100%'
           textAlign='left'
           position='relative'>
-          <Image
+          {/* <Image
             objectFit='cover'
             src={icon}
             alt={name}
             mr='3'
             style={{ filter: active ? "grayscale(0)" : "grayscale(100%)" }}
-          />
+          /> */}
           {sideActive && (
             <Text
               className='text-truncate'

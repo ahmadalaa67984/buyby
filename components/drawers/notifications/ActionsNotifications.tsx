@@ -45,12 +45,13 @@ const ActionsNotifications = () => {
     allBusinessOwners: false,
   });
   const [users, setUsers] = useState([]);
+  const [specificUser, setSpecificUser] = useState(false);
   const [selectUsers, setSelectedUsers] = useState([]);
   const animatedComponents = makeAnimated();
 
   const { title, body, imageUrl, allBusinessOwners, allCustomers } = values;
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
       [e.target.name]: e.target.value,
@@ -177,6 +178,7 @@ const ActionsNotifications = () => {
                     name='allBusinessOwners'
                     value={allBusinessOwners}
                     isChecked={allBusinessOwners}
+                    disabled={specificUser}
                     onChange={(e) =>
                       setValues({
                         ...values,
@@ -194,6 +196,7 @@ const ActionsNotifications = () => {
                     name='allCustomers'
                     value={allCustomers}
                     isChecked={allCustomers}
+                    disabled={specificUser}
                     onChange={(e) =>
                       setValues({
                         ...values,
@@ -203,24 +206,38 @@ const ActionsNotifications = () => {
                   />
                 </FormControl>
               </Flex>
-              <FormControl>
-                <FormLabel htmlFor='users' mb='2'>
-                  Select Users
+              <FormControl display='flex' alignItems='center'>
+                <FormLabel htmlFor='specificUser' mb='0'>
+                  Specific Users?
                 </FormLabel>
-                <Select
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  defaultValue={[]}
-                  isMulti
-                  onChange={(e) => setSelectedUsers(e)}
-                  options={users?.map((user) => {
-                    return {
-                      value: user?._id,
-                      label: user?.name,
-                    };
-                  })}
+                <Switch
+                  id='specificUser'
+                  value={specificUser}
+                  isChecked={specificUser}
+                  disabled={allBusinessOwners || allCustomers}
+                  onChange={(e) => setSpecificUser(e.target.checked)}
                 />
               </FormControl>
+              {specificUser && (
+                <FormControl>
+                  <FormLabel htmlFor='users' mb='2'>
+                    Select Users
+                  </FormLabel>
+                  <Select
+                    closeMenuOnSelect={false}
+                    components={animatedComponents}
+                    defaultValue={[]}
+                    isMulti
+                    onChange={(e) => setSelectedUsers(e)}
+                    options={users?.map((user) => {
+                      return {
+                        value: user?._id,
+                        label: user?.name,
+                      };
+                    })}
+                  />
+                </FormControl>
+              )}
             </Flex>
             <Button ref={refEditButton} onClick={onSubmit} hidden={true}>
               Save

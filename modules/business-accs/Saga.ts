@@ -30,9 +30,22 @@ function* getAllBusinessAccs({ payload }) {
   }
 }
 
+function* getUserById({ payload }) {
+  try {
+    yield put(actions.controlBussinesAccLoading(true));
+    const result = yield call(api.getUserById, payload);
+    yield put(actions.getUserByIdSuccess(result.data));
+  } catch (error) {
+    extractErrorMsgFromResponse(error);
+  } finally {
+    yield put(actions.controlBussinesAccLoading(false));
+  }
+}
+
 export default function* tablesSagas() {
   yield takeLatest(
     Types.SEARCH_ALL_BUSINESS_ACCS_REQUEST as any,
     getAllBusinessAccs
   );
+  yield takeLatest(Types.GET_BUSINESS_ACC_REQUEST as any, getUserById);
 }
