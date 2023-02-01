@@ -16,7 +16,7 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../services/combinedReducers";
-// import { CSVLink } from 'react-csv';
+// import { CSVLink } from "react-csv";
 // import { getAllArchiveCampaignsRequest } from '../../modules/restaurant/campaigns-management/Actions';
 // import { getAllArchiveItemsRequest } from '../../modules/restaurant/item-management/Actions';
 // import { getAllArchiveProfilesRequest } from '../../modules/profiles/Actions';
@@ -31,6 +31,7 @@ const CFooter = ({
   footerBtnTitle,
   setPage,
   totalPage,
+  setPerPage,
   currentpage,
   setPageNumber,
   archiveFn,
@@ -141,7 +142,7 @@ const CFooter = ({
 
   return (
     <Flex justify='space-between' align='center' mb='5' mt='4'>
-      <Flex align='center'>
+      {/* <Flex align='center'>
         {footerBtnTitle && length > 0 ? (
           <CSVLink
             data={data}
@@ -154,14 +155,14 @@ const CFooter = ({
                 textDecoration={"underline"}
                 alignContent='center'
                 isFullWidth={true}>
-                {/* <IconButton
+                <IconButton
                                 style={{ padding: '10px 15px 10px 5px' }}
                                 aria-label="Download archived profiles"
                                 color="primary"
                                 icon={<BiArrowBack fontSize="22px" />}
                                 border="none"
                                 isDisabled={length > 0 ? false : true}
-                            /> */}
+                            />
                 <Icon as={MdFileDownload} fontSize='18px' w={6} h={6} mr='3' />
                 {footerBtnTitle}
               </Button>
@@ -170,7 +171,7 @@ const CFooter = ({
         ) : (
           ""
         )}
-      </Flex>
+      </Flex> */}
       <Box>
         <Flex align='center'>
           <span style={{ marginRight: "10px", color: "#1B2028" }}>
@@ -180,9 +181,13 @@ const CFooter = ({
           <IconButton
             mr='1'
             ml='1'
-            bg={idx === 1 ? "rgba(89, 98, 53, 0.3)" : "rgba(89, 98, 53, 1)"}
+            bg={idx === 1 ? "secondary_variants.300" : "secondary_variants.700"}
             borderRadius='20px'
             aria-label='previousPage'
+            _hover={{
+              bg:
+                idx === 1 ? "secondary_variants.300" : "secondary_variants.700",
+            }}
             onClick={() => {
               router.push({
                 pathname: router.pathname,
@@ -207,27 +212,36 @@ const CFooter = ({
           <IconButton
             mr='1'
             ml='1'
-            bg={idx >= totalPage ? "#596235" : "rgba(89, 98, 53, 1)"}
+            bg={idx >= totalPage ? "secondary_variants.300" : "secondary"}
             borderRadius='20px'
             aria-label='nextPage'
+            _hover={{
+              bg: idx >= totalPage ? "secondary_variants.300" : "secondary",
+            }}
             onClick={() => {
               // window.location.href = `${router.pathname}/`
               router.push({
                 pathname: router.pathname,
                 query: { ...router.query, idx: idx + 1 },
               });
+              setPage((prev) => prev + 1);
+              setPerPage((prev) => prev + 10);
             }}
             disabled={idx >= totalPage}
             icon={
               router.locale == "ar" ? (
                 <Icon
                   as={IoIosArrowBack}
-                  color={idx >= totalPage ? "white" : "rgba(89, 98, 53, 1)"}
+                  color={
+                    idx >= totalPage
+                      ? "secondary_variants.300"
+                      : "secondary_variants.700"
+                  }
                 />
               ) : (
                 <Icon
                   as={IoIosArrowForward}
-                  color={idx >= totalPage ? "white" : "rgba(89, 98, 53, 1)"}
+                  color={idx >= totalPage ? "secondary" : "#fff"}
                 />
               )
             }></IconButton>

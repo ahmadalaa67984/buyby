@@ -76,7 +76,7 @@ const CHeader = ({
     }, 500);
 
     return () => clearTimeout(timeId);
-  }, [value]);
+  }, [value, dispatch, router]);
   const onChange = (value: string) => {};
   // const { Translate } = useTranslation();
   // const tabelHeader = Translate('components').table_header;

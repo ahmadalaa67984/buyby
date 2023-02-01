@@ -71,7 +71,7 @@ const CTable = ({
           Actions: ActionsData ? ActionsData(value) : Actions,
         };
       }),
-    [Data]
+    [Data, Actions, ActionsData]
   );
 
   const columns = useMemo(
@@ -105,7 +105,7 @@ const CTable = ({
             ...state,
             pageIndex: currentpage,
           }),
-          [state, currentpage]
+          [state]
         );
       },
       initialState: { pageIndex: currentpage },
@@ -120,7 +120,7 @@ const CTable = ({
   );
 
   return (
-    <Flex justifyContent={"center"} alignItems='center' p={8}>
+    <Flex justifyContent={"center"} alignItems='center' p={8} bg='#F3F2F7'>
       <Container maxW='container'>
         <Box mb={10}>
           <CHeader
@@ -212,6 +212,7 @@ const CTable = ({
           pageIndex={pageIndex}
           pageOptions={pageOptions}
           setPage={setPage}
+          setPerPage={setPerPage}
           totalPage={totalPage}
           currentpage={currentpage}
           archiveFn={archiveFn}

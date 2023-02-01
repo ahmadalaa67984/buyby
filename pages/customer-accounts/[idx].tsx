@@ -74,7 +74,7 @@ const CustomerAccounts = (props) => {
         searchTerm: router.query.search,
       })
     );
-  }, [props.query]);
+  }, [props.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (customerAccs?.length > 0) setIsDataBefore(true);
@@ -89,7 +89,7 @@ const CustomerAccounts = (props) => {
         filterByDateTo: endDate,
       })
     );
-  }, [dir, sort, startDate, endDate]);
+  }, [dir, sort, startDate, endDate, dispatch]);
 
   // const handleDetails = () => {
   //   dispatch(getCustomerRequest(selected));
@@ -262,7 +262,7 @@ const CustomerAccounts = (props) => {
             direction='column'>
             <Heading size='lg'>Customer Accounts</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {

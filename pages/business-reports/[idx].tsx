@@ -11,6 +11,8 @@ import { RootState } from "@/services/combinedReducers";
 import {
   Box,
   Button,
+  Card,
+  CardBody,
   Divider,
   Flex,
   FormControl,
@@ -100,7 +102,7 @@ const BusinessReports = (props) => {
         })
       );
     }
-  }, [stateOfDate]);
+  }, [stateOfDate, dispatch]);
 
   const data = businessReports?.map((user: any) => {
     return {
@@ -214,7 +216,7 @@ const BusinessReports = (props) => {
             direction='column'>
             <Heading size='lg'>Business Reports</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {
@@ -230,14 +232,14 @@ const BusinessReports = (props) => {
           <Box bg='#f4f6f9' minH='600px'>
             <Heading p={8}>Business Reports</Heading>
             {isDateRangeVisible && (
-              <Box position={"absolute"} top='20%' left='17.8%'>
+              <Box position={"absolute"} top='21.5%' left='18.5%' zIndex={999}>
                 <DateRange
                   stateOfDate={stateOfDate}
                   setStateOfDate={setStateOfDate}
                 />
               </Box>
             )}
-            <Box position={"absolute"} top='16%' left='17.8%'>
+            <Box position={"absolute"} top='17%' left='18.5%'>
               <Button
                 colorScheme={"primaryColorScheme"}
                 onClick={() => setIsDateRangeVisible((prev) => !prev)}>
@@ -246,7 +248,15 @@ const BusinessReports = (props) => {
             </Box>
             {/* {data?.length === 0 && !isDataBefore && <CustomersReportsEmptyPage />} */}
             {isLoading && <Progress size='xs' isIndeterminate />}
-            {data?.length > 0 && (
+            {data?.length === 0 ? (
+              <Box p={8} mt={8}>
+                <Card boxShadow={"none"}>
+                  <CardBody>
+                    <Text>No data to show.</Text>
+                  </CardBody>
+                </Card>
+              </Box>
+            ) : (
               <CTable
                 selectedData={viewData}
                 footerBtnTitle={false}

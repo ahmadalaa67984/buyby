@@ -90,7 +90,7 @@ const NotificationsPage = (props) => {
         })
       );
     }
-  }, [props.query, selectedUser]);
+  }, [props.query, dispatch, router.query.search, size, selectedUser]);
 
   useEffect(() => {
     if (notifications?.length > 0) setIsDataBefore(true);
@@ -122,7 +122,17 @@ const NotificationsPage = (props) => {
         })
       );
     }
-  }, [dir, sort, startDate, endDate, selectedUser]);
+  }, [
+    dir,
+    sort,
+    startDate,
+    endDate,
+    selectedUser,
+    dispatch,
+    props.query.idx,
+    size,
+    router.query.search,
+  ]);
 
   const onSubmitDelete = () => {
     dispatch(deleteNotificationRequest(selected));
@@ -250,10 +260,10 @@ const NotificationsPage = (props) => {
               p={3}
               fontWeight='black'
               _hover={{
-                bg: "gray.200",
-                color: "blue.500",
+                bg: "primary_variants.100",
+                color: "primary",
               }}
-              icon={<CgEyeAlt fontSize='25px' color='#126890' />}
+              icon={<CgEyeAlt fontSize='25px' color='#5211A5' />}
               onClick={() => handleDetails()}>
               See Details
             </MenuItem>
@@ -261,10 +271,10 @@ const NotificationsPage = (props) => {
               p={3}
               fontWeight='black'
               _hover={{
-                bg: "gray.200",
-                color: "blue.500",
+                bg: "primary_variants.100",
+                color: "primary",
               }}
-              icon={<CgTrash fontSize='25px' color='#126890' />}
+              icon={<CgTrash fontSize='25px' color='#5211A5' />}
               onClick={() => setDeleteModal(true)}>
               Delete
             </MenuItem>
@@ -339,7 +349,7 @@ const NotificationsPage = (props) => {
           direction='column'>
           <Heading size='lg'>Notifications</Heading>
           <Button
-            color='blue100'
+            color='blue.500'
             bg='blue500'
             mt='5'
             onClick={() => {

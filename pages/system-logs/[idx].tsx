@@ -67,7 +67,7 @@ const SystemLogs = (props) => {
         searchTerm: router.query.search,
       })
     );
-  }, [props.query]);
+  }, [props.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (sysLogs?.length > 0) setIsDataBefore(true);
@@ -82,7 +82,7 @@ const SystemLogs = (props) => {
         filterByDateTo: endDate,
       })
     );
-  }, [dir, sort, startDate, endDate]);
+  }, [dir, sort, startDate, endDate, dispatch]);
 
   const onSubmitDelete = () => {
     dispatch(deleteSystemLogRequest(selected));
@@ -188,10 +188,10 @@ const SystemLogs = (props) => {
               p={3}
               fontWeight='black'
               _hover={{
-                bg: "gray.200",
-                color: "blue.500",
+                bg: "primary_variants.100",
+                color: "primary",
               }}
-              icon={<CgEyeAlt fontSize='25px' color='#126890' />}
+              icon={<CgEyeAlt fontSize='25px' color='#5211A5' />}
               onClick={() => handleDetails()}>
               See Details
             </MenuItem>
@@ -199,10 +199,10 @@ const SystemLogs = (props) => {
               p={3}
               fontWeight='black'
               _hover={{
-                bg: "gray.200",
-                color: "blue.500",
+                bg: "primary_variants.100",
+                color: "primary",
               }}
-              icon={<CgTrash fontSize='25px' color='#126890' />}
+              icon={<CgTrash fontSize='25px' color='#5211A5' />}
               onClick={() => setDeleteModal(true)}>
               Delete
             </MenuItem>
@@ -212,8 +212,18 @@ const SystemLogs = (props) => {
     );
   };
 
-  console.log({ selected });
-  const totalPage = 2;
+  // const totalPage = 2;
+  const totalPage = Math.ceil(data?.length / 10)
+    ? Math.ceil(data?.length / 10)
+    : 1;
+  console.log({
+    selected,
+    totalPage,
+    idx: props.query.idx,
+    data,
+    offset,
+    size,
+  });
 
   return (
     <AdminAuth>
@@ -231,7 +241,7 @@ const SystemLogs = (props) => {
             direction='column'>
             <Heading size='lg'>System Logs</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {
@@ -270,12 +280,7 @@ const SystemLogs = (props) => {
                 currentpage={pageNumber}
                 setPageNumber={setPageNumber}
                 perPage={size}
-                totalPage={
-                  // Math.ceil(tablesNumber.length / 10)
-                  //   ? Math.ceil(tablesNumber.length / 10)
-                  //   : 1
-                  2
-                }
+                totalPage={totalPage}
                 searchFn={getAllSystemLogsRequest}
                 idx={parseInt(props.query.idx)}
                 headerChildren={undefined}

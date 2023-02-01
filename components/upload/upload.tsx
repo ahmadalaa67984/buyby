@@ -103,7 +103,7 @@ const Upload = (props) => {
       setValue(inputName, url);
       insertAction(url, file);
     }
-  }, [url]);
+  }, [url, file, inputName, insertAction, setValue]);
 
   useEffect(() => {
     if (droppedFiles && droppedFiles?.length > 0) {
