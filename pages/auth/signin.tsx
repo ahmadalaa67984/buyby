@@ -24,8 +24,8 @@ import { useDispatch, useSelector } from "react-redux";
 const Signin = () => {
   const [show, setShow] = useState(false);
   const [values, setValues] = useState({
+    email: "mohammed.abdelhady@pharaohsoft.com",
     password: "P@ssw0rd",
-    email: "hemedah94@gmail.com",
   });
 
   const { password, email } = values;

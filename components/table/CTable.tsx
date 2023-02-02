@@ -71,7 +71,7 @@ const CTable = ({
           Actions: ActionsData ? ActionsData(value) : Actions,
         };
       }),
-    [Data, Actions, ActionsData]
+    [Data]
   );
 
   const columns = useMemo(
@@ -105,7 +105,7 @@ const CTable = ({
             ...state,
             pageIndex: currentpage,
           }),
-          [state]
+          [state, currentpage]
         );
       },
       initialState: { pageIndex: currentpage },

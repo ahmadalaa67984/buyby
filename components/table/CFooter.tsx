@@ -224,8 +224,8 @@ const CFooter = ({
                 pathname: router.pathname,
                 query: { ...router.query, idx: idx + 1 },
               });
-              setPage((prev) => prev + 1);
-              setPerPage((prev) => prev + 10);
+              // setPage((prev) => prev + 1);
+              // setPerPage((prev) => prev + 10);
             }}
             disabled={idx >= totalPage}
             icon={
