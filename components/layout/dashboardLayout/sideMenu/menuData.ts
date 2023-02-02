@@ -11,7 +11,15 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
   // ];
   return [
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
+      name: "Dashboard",
+      link: "/dashboard",
+      count: -1,
+      subMenu: [],
+      active: pathName?.includes("dashboard"),
+    },
+    {
+      icon: "/images/dashboard.png",
       name: "System Logs",
       link: "/system-logs/1",
       count: -1,
@@ -19,7 +27,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("system-logs"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Notifications",
       link: "/notifications/1",
       count: -1,
@@ -27,7 +35,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("notifications"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Customer Accounts",
       link: "/customer-accounts/1",
       count: -1,
@@ -35,7 +43,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("customer-accounts"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Business Accounts",
       link: "/business-accounts/1",
       count: -1,
@@ -43,7 +51,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("business-accounts"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Customer Reports",
       link: "/customer-reports/1",
       count: -1,
@@ -51,7 +59,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("customer-reports"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Business Reports",
       link: "/business-reports/1",
       count: -1,
@@ -59,7 +67,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("business-reports"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Subscriptions",
       link: "/subscription-reports/1",
       count: -1,
@@ -67,7 +75,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
       active: pathName?.includes("subscription-reports"),
     },
     {
-      icon: "/images/brand.png",
+      icon: "/images/dashboard.png",
       name: "Manage Admins",
       link: "/manage-admins/1",
       count: -1,

@@ -45,6 +45,24 @@ function* signoutUser() {
   }
 }
 
+function* forgotPassword(formData) {
+  try {
+    yield put(actions.addAuthLoading(true));
+    const result = yield call(api.forgotPassword, formData.payload);
+    yield put(
+      actions.forgotPasswordSuccess({
+        data: result.data,
+      })
+    );
+    window.location.href = "/password/reset";
+  } catch (error) {
+    extractErrorMsgFromResponse(error);
+    yield put(actions.resetPasswordFail());
+  } finally {
+    yield put(actions.addAuthLoading(false));
+  }
+}
+
 function* resetPassword(formData) {
   try {
     yield put(actions.addAuthLoading(true));
@@ -54,8 +72,26 @@ function* resetPassword(formData) {
         data: result.data,
       })
     );
-    toast.success("Reset Password Successfully ");
+    toast.success("You can now login with your new password");
     window.location.href = "/auth/signin";
+  } catch (error) {
+    extractErrorMsgFromResponse(error);
+    yield put(actions.resetPasswordFail());
+  } finally {
+    yield put(actions.addAuthLoading(false));
+  }
+}
+
+function* resendVerifyCode(formData) {
+  try {
+    yield put(actions.addAuthLoading(true));
+    const result = yield call(api.resendVerifyCode, formData.payload);
+    yield put(
+      actions.resendVerifyCodeSuccess({
+        data: result.data,
+      })
+    );
+    toast.success("Code send to you");
   } catch (error) {
     extractErrorMsgFromResponse(error);
     yield put(actions.resetPasswordFail());
@@ -67,5 +103,7 @@ function* resetPassword(formData) {
 export default function* authSagas() {
   yield takeLatest(Types.SIGNIN_REQUEST, signinUser);
   yield takeLatest(Types.SIGNOUT_REQUEST, signoutUser);
+  yield takeLatest(Types.FORGOT_PASSWORD_REQUEST, forgotPassword);
   yield takeLatest(Types.RESET_PASSWORD_REQUEST, resetPassword);
+  yield takeLatest(Types.RESEND_VERIFY_CODE_REQUEST, resendVerifyCode);
 }

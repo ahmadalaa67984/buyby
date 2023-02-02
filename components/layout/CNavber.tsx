@@ -12,8 +12,13 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { MdDashboardCustomize } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { BiLogOutCircle } from "react-icons/bi";
+import Image from "next/image";
 
 const CNavber = () => {
   const dispatch = useDispatch();
@@ -21,11 +26,15 @@ const CNavber = () => {
   const { data } = useSelector((state: RootState) => state.user);
   const router = useRouter();
 
+  const routes = useMemo(() => {
+    return ["/auth/signin", "/password/forgot", "/password/reset"];
+  }, []);
+
   useEffect(() => {
-    if (router.pathname !== "/auth/signin") {
+    if (routes.includes(router.pathname)) {
       dispatch(getUserRequest());
     }
-  }, [dispatch]);
+  }, [dispatch, router.pathname, routes]);
 
   return (
     <Flex
@@ -33,9 +42,14 @@ const CNavber = () => {
       textAlign='center'
       alignItems='center'
       justifyContent={"space-between"}>
-      <Box fontWeight={"bold"} fontSize={22}>
-        Buy By
-      </Box>
+      <Link href='/'>
+        <Image
+          src='/images/logo.png'
+          alt='Buy By Logo'
+          width={40}
+          height={40}
+        />
+      </Link>
       <Box>
         {token ? (
           <Menu>
@@ -43,10 +57,31 @@ const CNavber = () => {
               {data?.email}
             </MenuButton>
             <MenuList p={0}>
-              <MenuItem onClick={() => router.push("/profile/settings")}>
+              <MenuItem
+                p={4}
+                _hover={{
+                  color: "blue.500",
+                }}
+                onClick={() => router.push("/system-logs/1")}
+                icon={<MdDashboardCustomize fontSize={22} />}>
+                Dashboard
+              </MenuItem>
+              <MenuItem
+                p={4}
+                _hover={{
+                  color: "blue.500",
+                }}
+                onClick={() => router.push("/profile/settings")}
+                icon={<RiLockPasswordFill fontSize={22} />}>
                 Change Password
               </MenuItem>
-              <MenuItem onClick={() => dispatch(signoutRequest())}>
+              <MenuItem
+                p={4}
+                _hover={{
+                  color: "blue.500",
+                }}
+                onClick={() => dispatch(signoutRequest())}
+                icon={<BiLogOutCircle fontSize={22} />}>
                 Sign Out
               </MenuItem>
             </MenuList>

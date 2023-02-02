@@ -4,6 +4,7 @@ import { RootState } from "../../services/combinedReducers";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 import { getUserRequest } from "@/modules/user/Actions";
+import { Box } from "@chakra-ui/react";
 
 const AdminAuth = ({ children }) => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -28,7 +29,7 @@ const AdminAuth = ({ children }) => {
     }
   }, [auth, user]);
 
-  return <>{children}</>;
+  return <Box bg='#F3F2F7'>{children}</Box>;
 };
 
 export default AdminAuth;

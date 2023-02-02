@@ -70,7 +70,7 @@ const FormIndex = ({
       setValue("phoneNumber", defaultValues?.phoneNumber);
       setPhoneNumber(defaultValues?.phoneNumber);
     }
-  }, [defaultValues]);
+  }, [defaultValues, setValue]);
 
   const handelChange = () => {
     if (changeAction) changeAction(watch());

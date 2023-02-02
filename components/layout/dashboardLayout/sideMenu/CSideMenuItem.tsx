@@ -12,7 +12,9 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { AiFillDashboard } from "react-icons/ai";
 import { BiBorderBottom, BiHomeCircle } from "react-icons/bi";
+import { GrDashboard } from "react-icons/gr";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 interface MenuProps {
@@ -38,22 +40,23 @@ const CSideMenuItem = ({
 }: Props) => {
   const [subActive, setSubActive] = useState(active);
   const router = useRouter();
+
   const renderMenuItem = (name, count, icon, subMenu, active, link) => {
     return (
       <Button
         key={name}
         title={name}
-        h='7vh'
+        h='4.5vh'
         w='100%'
-        bg={active ? "gray.50" : "transparent"}
+        bg={active ? "primary_variants.100" : "transparent"}
         position='relative'
-        borderRadius='none'
+        borderRadius='md'
+        _hover={{
+          bg: "primary_variants.100",
+          color: "primary",
+        }}
+        // leftIcon={icon}
         mt={subMenu?.length ? 0 : 3}
-        borderBottom={
-          (subMenu?.length || name === "Dashboard") && !active
-            ? "1px solid rgba(0, 0, 0, .05)"
-            : "none"
-        }
         onClick={() => {
           if (link) {
             router.push(link);
@@ -68,13 +71,14 @@ const CSideMenuItem = ({
           w='100%'
           textAlign='left'
           position='relative'>
-          {/* <Image
+          <Image
             objectFit='cover'
             src={icon}
             alt={name}
+            width={22}
+            height={22}
             mr='3'
-            style={{ filter: active ? "grayscale(0)" : "grayscale(100%)" }}
-          /> */}
+          />
           {sideActive && (
             <Text
               className='text-truncate'
@@ -112,7 +116,7 @@ const CSideMenuItem = ({
       <Collapse in={subActive} animateOpacity>
         <List>
           {subMenu?.map((data: MenuProps) => (
-            <Flex justify='center'>
+            <Flex justify='center' key={data.name}>
               <Box width='90%'>
                 {renderMenuItem(
                   data.name,

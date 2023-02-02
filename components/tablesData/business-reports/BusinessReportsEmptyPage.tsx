@@ -1,5 +1,6 @@
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import { Button, Container, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import Image from "next/image";
 import { IoIosAdd } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
@@ -37,12 +38,7 @@ const BusinessReportsEmptyPage = () => {
           align='center'
           justify='center'
           direction='column'>
-          <img
-            src='/images/brand.png'
-            style={{
-              objectFit: "cover",
-            }}
-          />
+          <Image src='/images/brand.png' alt='' width={200} height={200} />
           <Heading as='h2' size='xl' isTruncated mt={5} mb={2} color='black'>
             Business Reports Management is empty
           </Heading>

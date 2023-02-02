@@ -55,7 +55,7 @@ const SuperAdminsPage = (props) => {
         searchTerm: router.query.search,
       })
     );
-  }, [props.query]);
+  }, [props.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (superAdmins?.length > 0) setIsDataBefore(true);
@@ -70,7 +70,7 @@ const SuperAdminsPage = (props) => {
         filterByDateTo: endDate,
       })
     );
-  }, [dir, sort, startDate, endDate]);
+  }, [dir, sort, startDate, endDate, dispatch]);
 
   const data = superAdmins?.map((admin: ISuperAdmin) => {
     return {
@@ -152,7 +152,7 @@ const SuperAdminsPage = (props) => {
             direction='column'>
             <Heading size='lg'>Super Admins</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {

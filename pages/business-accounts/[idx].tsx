@@ -74,7 +74,7 @@ const BusinessAccounts = (props) => {
         searchTerm: router.query.search,
       })
     );
-  }, [props.query]);
+  }, [props.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (businessAccs?.length > 0) setIsDataBefore(true);
@@ -89,7 +89,7 @@ const BusinessAccounts = (props) => {
         filterByDateTo: endDate,
       })
     );
-  }, [dir, sort, startDate, endDate]);
+  }, [dir, sort, startDate, endDate, dispatch]);
 
   console.log({ selected });
   const handleDetails = () => {
@@ -195,20 +195,20 @@ const BusinessAccounts = (props) => {
               p={3}
               fontWeight='black'
               _hover={{
-                bg: "gray.200",
-                color: "blue.500",
+                bg: "primary_variants.100",
+                color: "primary",
               }}
-              icon={<CgEyeAlt fontSize='25px' color='#126890' />}
+              icon={<CgEyeAlt fontSize='25px' color='#5211A5' />}
               onClick={() => handleDetails()}>
               See Details
             </MenuItem>
             {/* <MenuItem
                 p={3}
                 fontWeight='black'
-                _hover={{
-                  bg: "gray.200",
-                  color: "blue.500",
-                }}
+                 _hover={{
+                bg: "primary_variants.100",
+                color: "primary",
+              }}
                 icon={<CgEyeAlt fontSize='25px' color='#126890' />}
                 onClick={() =>
                   dispatch(drawerActionToggle(true, "EDIT", "customers"))
@@ -240,7 +240,7 @@ const BusinessAccounts = (props) => {
             direction='column'>
             <Heading size='lg'>Business Accounts</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {

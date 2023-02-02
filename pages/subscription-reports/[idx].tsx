@@ -81,7 +81,7 @@ const SubscriptionReports = (props) => {
         })
       );
     }
-  }, [stateOfDate]);
+  }, [stateOfDate, dispatch]);
 
   const data = subReports?.map((user: any) => {
     return {
@@ -132,7 +132,7 @@ const SubscriptionReports = (props) => {
             direction='column'>
             <Heading size='lg'>Subscription Reports</Heading>
             <Button
-              color='blue100'
+              color='blue.500'
               bg='blue500'
               mt='5'
               onClick={() => {
@@ -145,7 +145,7 @@ const SubscriptionReports = (props) => {
             </Button>
           </Flex>
         ) : (
-          <Box bg='#f4f6f9' minH='600px'>
+          <Box bg='#F3F2F7' minH='600px'>
             <Heading p={8}>Subscription Reports</Heading>
             <Box p={8} position='relative'>
               <SubscriptionsTabs>
