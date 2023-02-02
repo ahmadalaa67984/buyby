@@ -11,7 +11,7 @@ const CRtlProvider = ({ children }) => {
   const { locale } = useRouter();
   const dir = locale == "ar" ? "rtl" : "ltr";
   const cache = createCache(options[dir]);
-  return <CacheProvider value={cache} children={children} />;
+  return <CacheProvider value={cache}>{children}</CacheProvider>;
 };
 
 export default CRtlProvider;
