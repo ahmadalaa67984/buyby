@@ -41,7 +41,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import AdminAuth from "@/components/auth/AdminAuth";
 
-const CustomerReports = (props) => {
+const Reports = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [offset, setPage] = useState(0);
@@ -202,10 +202,7 @@ const CustomerReports = (props) => {
 
   return (
     <AdminAuth>
-      <CDashboardLayout
-        title='Customer Reports'
-        description='Customer Reports'
-        count={""}>
+      <CDashboardLayout title='Reports' description='Reports' count={""}>
         {parseInt(props.query.idx) <= 0 ||
         totalPage < parseInt(props.query.idx) ? (
           <Flex
@@ -214,7 +211,7 @@ const CustomerReports = (props) => {
             align='center'
             justify='center'
             direction='column'>
-            <Heading size='lg'>Customer Reports</Heading>
+            <Heading size='lg'>Reports</Heading>
             <Button
               color='blue.500'
               bg='blue500'
@@ -225,12 +222,12 @@ const CustomerReports = (props) => {
                   query: { ...router.query, idx: 1 },
                 });
               }}>
-              Back to Customer Reports
+              Back to Reports
             </Button>
           </Flex>
         ) : (
           <Box bg='#F3F2F7' minH='600px'>
-            <Heading p={8}>Customer Reports</Heading>
+            <Heading p={8}>Reports</Heading>
             <Box
               position={"relative"}
               px={8}
@@ -274,10 +271,10 @@ const CustomerReports = (props) => {
                 Columns={columns}
                 Actions={<></>}
                 // ActionsData={(data) => actions(data)}
-                Title='Customer Reports Management'
-                subTitle={`Search, view customer reports.`}
+                Title='Reports Management'
+                subTitle={`Search, view reports.`}
                 btnTitle=''
-                placeHolder='Search for customers reports...'
+                placeHolder='Search for reports...'
                 setPage={setPage}
                 setPerPage={setPerPage}
                 currentpage={pageNumber}
@@ -301,8 +298,8 @@ const CustomerReports = (props) => {
   );
 };
 
-export default CustomerReports;
+export default Reports;
 
-CustomerReports.getInitialProps = async (ctx: { query: any }) => {
+Reports.getInitialProps = async (ctx: { query: any }) => {
   return { query: ctx.query };
 };

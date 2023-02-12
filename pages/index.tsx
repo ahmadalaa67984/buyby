@@ -4,9 +4,19 @@ import { Button, Flex, Heading } from "@chakra-ui/react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/services/combinedReducers";
+import { useRouter } from "next/router";
 
 const Homepage = () => {
   const { token } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (token) {
+      router.push("/dashboard");
+    } else {
+      router.push("/auth/signin");
+    }
+  }, [router, token]);
 
   return (
     <CLayout title={"Homepage"} description='Homepage'>

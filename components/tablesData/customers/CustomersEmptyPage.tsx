@@ -38,7 +38,7 @@ const CustomersEmptyPage = () => {
           align='center'
           justify='center'
           direction='column'>
-          <Image src='/images/brand.png' alt='' width={200} height={200} />
+          <Image src='/images/buyby.png' alt='' width={200} height={200} />
           <Heading as='h2' size='xl' isTruncated mt={5} mb={2} color='black'>
             Customers Management is empty
           </Heading>
