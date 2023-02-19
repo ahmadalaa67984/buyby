@@ -211,6 +211,7 @@ const FormIndex = ({
           if (data.key === "multi") {
             return (
               <Grid
+                key={index}
                 templateColumns={{
                   base: "repeat(1, 1fr)",
                   md: "repeat(2, 1fr)",
@@ -235,7 +236,7 @@ const FormIndex = ({
           }
           if (data.key === "multiSelect") {
             return (
-              <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+              <Grid templateColumns='repeat(2, 1fr)' gap={4} key={index}>
                 {data.values?.map((multiData, multiIndex) => (
                   <GridItem h='100' key={multiIndex}>
                     <CMultiSelect
@@ -250,7 +251,7 @@ const FormIndex = ({
           }
           if (data.key === "multiRadio") {
             return (
-              <RadioGroup defaultValue={data?.defaultValue}>
+              <RadioGroup defaultValue={data?.defaultValue} key={index}>
                 <Stack spacing={10} direction='row'>
                   <Flex>
                     {data.values?.map((multiData, multiIndex) => (
@@ -270,12 +271,14 @@ const FormIndex = ({
 
           if (data.kind === "textArea") {
             return (
-              <CTextArea
-                register={register}
-                errors={errors}
-                data={data}
-                color={data?.color ? data?.color : ""}
-              />
+              <React.Fragment key={index}>
+                <CTextArea
+                  register={register}
+                  errors={errors}
+                  data={data}
+                  color={data?.color ? data?.color : ""}
+                />
+              </React.Fragment>
             );
           }
           if (data.key === "title") {
@@ -316,7 +319,7 @@ const FormIndex = ({
           ``;
           if (data.key === "file") {
             return (
-              <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+              <Grid templateColumns='repeat(2, 1fr)' gap={4} key={index}>
                 {withoutUpload === true
                   ? ""
                   : data.values?.map((multiData, multiIndex) => (
@@ -336,6 +339,7 @@ const FormIndex = ({
           if (data.key === "multiFile") {
             return (
               <Grid
+                key={index}
                 templateColumns={{
                   base: "repeat(1, 1fr)",
                   md: "repeat(2, 1fr)",

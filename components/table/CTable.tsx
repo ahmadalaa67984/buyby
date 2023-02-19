@@ -143,10 +143,11 @@ const CTable = ({
         </Box>
         <Table {...getTableProps()} bg='white' mb='6' borderRadius='6px'>
           <Thead bg='gray.50' color='#645f65'>
-            {headerGroups?.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers?.map((column) => (
+            {headerGroups?.map((headerGroup, index) => (
+              <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                {headerGroup.headers?.map((column, idx) => (
                   <Th
+                    key={idx}
                     bg='gray.50'
                     {...column.getHeaderProps(
                       column.Header === "" ? "" : column.getSortByToggleProps()
@@ -187,15 +188,17 @@ const CTable = ({
             ))}
           </Thead>
           <Tbody {...getTableBodyProps()} color='black'>
-            {page?.map((row) => {
+            {page?.map((row, index) => {
               prepareRow(row);
 
               return (
                 <Tr
+                  key={index}
                   {...row.getRowProps()}
                   onClick={() => selectedData(row.original)}>
-                  {row.cells?.map((cell) => (
+                  {row.cells?.map((cell, idx) => (
                     <Td
+                      key={idx}
                       {...cell.getCellProps()}
                       isNumeric={cell.column.isNumeric}>
                       {cell.render("Cell")}

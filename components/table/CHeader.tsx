@@ -113,9 +113,9 @@ const CHeader = ({
                 <InputLeftElement
                   pointerEvents='none'
                   h={50}
-                  style={{ color: "gray" }}
-                  children={<AiOutlineSearch size={20} />}
-                />
+                  style={{ color: "gray" }}>
+                  <AiOutlineSearch size={20} />
+                </InputLeftElement>
                 <Input
                   h='50px'
                   paddingTop={25}

@@ -10,13 +10,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+axios.defaults.baseURL = "https://buy-by-1.herokuapp.com/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
   "token"
 )}`;
 
 export default function App({ Component, pageProps }: AppProps) {
-  console.log(process.env.NEXT_PUBLIC_BACKEND_URL, "BACKEND_URL");
+  console.log(process.env.BACKEND_URL, "BACKEND_URL");
 
   return (
     <Provider store={store}>
