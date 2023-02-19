@@ -60,14 +60,20 @@ const CDashboardLayout = ({ title, description, children, count }) => {
             // bg='gray.400'
             alignItems='center'
             justifyContent={"space-between"}>
-            <Box>
+            <Flex alignItems={"center"} gridGap={4}>
               <IconButton
                 aria-label=''
                 bg='none'
                 onClick={() => setSidActive(!sideActive)}>
-                <HiOutlineMenuAlt3 fontSize={23} />
+                <HiOutlineMenuAlt3 fontSize={30} />
               </IconButton>
-            </Box>
+              <Box>
+                <Heading size='lg'>Dashboard</Heading>
+                <Text size={"md"} color='gray.400'>
+                  Welcome to BUY BY Admin!
+                </Text>
+              </Box>
+            </Flex>
             <Box>
               {token ? (
                 <Menu>

@@ -9,9 +9,13 @@ import { useRouter } from "next/router";
 const Homepage = () => {
   const { token } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
-  useEffect(() => {
-    router.push("/auth/signin");
-  }, []);
+ useEffect(() => {
+    if (token) {
+      router.push("/dashboard");
+    } else {
+      router.push("/auth/signin");
+    }
+  }, [router, token]);
   return (
     <CLayout title={"Homepage"} description='Homepage'>
       <Flex

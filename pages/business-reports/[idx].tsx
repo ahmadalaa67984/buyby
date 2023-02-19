@@ -229,22 +229,27 @@ const BusinessReports = (props) => {
             </Button>
           </Flex>
         ) : (
-          <Box bg='#f4f6f9' minH='600px'>
+          <Box bg='#F3F2F7' minH='600px'>
             <Heading p={8}>Business Reports</Heading>
-            {isDateRangeVisible && (
-              <Box position={"absolute"} top='21.5%' left='18.5%' zIndex={999}>
-                <DateRange
-                  stateOfDate={stateOfDate}
-                  setStateOfDate={setStateOfDate}
-                />
+            <Box
+              position={"relative"}
+              px={8}
+              h={isDateRangeVisible ? "500px" : "0"}>
+              {isDateRangeVisible && (
+                <Box position={"absolute"} zIndex={999}>
+                  <DateRange
+                    stateOfDate={stateOfDate}
+                    setStateOfDate={setStateOfDate}
+                  />
+                </Box>
+              )}
+              <Box position={"absolute"} zIndex={1000}>
+                <Button
+                  colorScheme={"primaryColorScheme"}
+                  onClick={() => setIsDateRangeVisible((prev) => !prev)}>
+                  Choose Date Range
+                </Button>
               </Box>
-            )}
-            <Box position={"absolute"} top='17%' left='18.5%'>
-              <Button
-                colorScheme={"primaryColorScheme"}
-                onClick={() => setIsDateRangeVisible((prev) => !prev)}>
-                Choose Date Range
-              </Button>
             </Box>
             {/* {data?.length === 0 && !isDataBefore && <CustomersReportsEmptyPage />} */}
             {isLoading && <Progress size='xs' isIndeterminate />}

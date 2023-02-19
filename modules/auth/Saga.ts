@@ -18,7 +18,7 @@ function* signinUser(formData) {
     );
 
     if (result?.data?.user?.role === "SUPER_ADMIN") {
-      window.location.href = "/system-logs/1";
+      window.location.href = "/dashboard";
     }
 
     toast.success("Successfully");
