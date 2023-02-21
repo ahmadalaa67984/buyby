@@ -5,7 +5,10 @@ import CDashboardLayout from "@/components/layout/dashboardLayout/CDashboardLayo
 import CTable from "@/components/table/CTable";
 import CustomersReportsEmptyPage from "@/components/tablesData/cust-reports/CustomersReportsEmptyPage";
 import CustomersEmptyPage from "@/components/tablesData/customers/CustomersEmptyPage";
-import { getAllCustomerReportsRequest } from "@/modules/customer-reports/Actions";
+import {
+  getAllCustomerReportsRequest,
+  getAllLogsReportsRequest,
+} from "@/modules/reports/Actions";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import { RootState } from "@/services/combinedReducers";
 import {
@@ -65,8 +68,8 @@ const Reports = (props) => {
     setSelected(data);
   };
 
-  const { customerReports, isLoading } = useSelector(
-    (state: RootState) => state.customerReports
+  const { logsReports, isLoading } = useSelector(
+    (state: RootState) => state.reports
   );
 
   //   useEffect(() => {
@@ -83,19 +86,19 @@ const Reports = (props) => {
   //     if (customerReports?.length > 0) setIsDataBefore(true);
   //   }, [customerReports]);
 
-  useEffect(() => {
-    dispatch(
-      getAllCustomerReportsRequest({
-        filterByDateFrom: moment(new Date()).subtract(1, "month").add(1, "day"),
-        filterByDateTo: moment(new Date()).format(),
-      })
-    );
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(
+  //     getAllCustomerReportsRequest({
+  //       filterByDateFrom: moment(new Date()).subtract(1, "month").add(1, "day"),
+  //       filterByDateTo: moment(new Date()).format(),
+  //     })
+  //   );
+  // }, [dispatch]);
 
   useEffect(() => {
     if (stateOfDate[0].startDate && stateOfDate[0].endDate) {
       dispatch(
-        getAllCustomerReportsRequest({
+        getAllLogsReportsRequest({
           filterByDateFrom: moment(stateOfDate[0].startDate).format(),
           filterByDateTo: moment(stateOfDate[0].endDate).format(),
         })
@@ -103,7 +106,7 @@ const Reports = (props) => {
     }
   }, [stateOfDate, dispatch]);
 
-  const data = customerReports?.map((user: any) => {
+  const data = logsReports?.map((user: any) => {
     return {
       ...user,
       id: user?._id,
@@ -197,7 +200,7 @@ const Reports = (props) => {
   //   );
   // };
 
-  console.log({ customerReports, stateOfDate });
+  console.log({ logsReports, stateOfDate });
   const totalPage = 2;
 
   return (
@@ -286,7 +289,7 @@ const Reports = (props) => {
                   //   : 1
                   2
                 }
-                searchFn={getAllCustomerReportsRequest}
+                searchFn={getAllLogsReportsRequest}
                 idx={parseInt(props.query.idx)}
                 headerChildren={undefined}
               />
