@@ -20,6 +20,16 @@ export const createSuperAdminsSuccess = (data) => ({
   payload: data,
 });
 
+export const activateUserRequest = (body) => ({
+  type: Types.ACTIVATE_USER_REQUEST,
+  payload: body,
+});
+
+export const activateUserSuccess = (data) => ({
+  type: Types.ACTIVATE_USER_SUCCESS,
+  payload: data,
+});
+
 export const controlSuperAdminLoading = (isLoading: boolean) => ({
   type: Types.SUPER_ADMIN_LOADING,
   payload: isLoading,

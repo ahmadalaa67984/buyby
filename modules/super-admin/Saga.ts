@@ -45,10 +45,23 @@ function* createSuperAdmin(formData) {
   }
 }
 
+function* activateUser(formData) {
+  try {
+    yield put(actions.controlSuperAdminLoading(true));
+    const result = yield call(api.activateUser, formData.payload);
+    window.location.reload();
+  } catch (error: any) {
+    extractErrorMsgFromResponse(error);
+  } finally {
+    yield put(actions.controlSuperAdminLoading(false));
+  }
+}
+
 export default function* tablesSagas() {
   yield takeLatest(
     Types.GET_ALL_SUPER_ADMINS_REQUEST as any,
     getAllSuperAdmins
   );
   yield takeLatest(Types.CREATE_SUPER_ADMIN_REQUEST as any, createSuperAdmin);
+  yield takeLatest(Types.ACTIVATE_USER_REQUEST as any, activateUser);
 }

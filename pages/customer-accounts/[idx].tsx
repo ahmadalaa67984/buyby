@@ -11,6 +11,7 @@ import {
 } from "@/modules/customer-accs/Actions";
 import { ICustomer } from "@/modules/customer-accs/interface";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
+import { activateUserRequest } from "@/modules/super-admin/Actions";
 import { RootState } from "@/services/combinedReducers";
 import {
   Box,
@@ -62,7 +63,7 @@ const CustomerAccounts = (props) => {
     setSelected(data);
   };
 
-  const { customerAccs, isLoading } = useSelector(
+  const { customerAccs, isLoading, numberOfCustomerAcc } = useSelector(
     (state: RootState) => state.customer
   );
 
@@ -126,7 +127,7 @@ const CustomerAccounts = (props) => {
         <Box color='blue.500'>
           <FormControl display='flex' alignItems='center'>
             <Switch
-              isChecked={user?.receivePromotionalMessagesOrDiscounts}
+              defaultChecked={user?.receivePromotionalMessagesOrDiscounts}
               onChange={(e) => {
                 handlePromotion({
                   id: user?._id,
@@ -136,6 +137,22 @@ const CustomerAccounts = (props) => {
             />
           </FormControl>
         </Box>
+      ),
+      actions: (
+        <FormControl display='flex' gridGap={4} alignItems='center' mt={4}>
+          <Switch
+            defaultChecked={user?.active}
+            onChange={(e) =>
+              dispatch(
+                activateUserRequest({
+                  active: e.target.checked,
+                  _id: user?._id,
+                })
+              )
+            }
+          />
+          <FormLabel>{user?.active ? "Active" : "Inactive"}</FormLabel>
+        </FormControl>
       ),
     };
   });
@@ -193,10 +210,10 @@ const CustomerAccounts = (props) => {
       Header: "Recieve Promotional?",
       accessor: "rp",
     },
-    // {
-    //   Header: "",
-    //   accessor: "Actions",
-    // },
+    {
+      Header: "Activation",
+      accessor: "actions",
+    },
   ];
 
   // const actions = (data) => {
@@ -244,7 +261,9 @@ const CustomerAccounts = (props) => {
   // };
 
   console.log({ customerAccs });
-  const totalPage = 2;
+  const totalPage = Math.ceil(numberOfCustomerAcc / 10)
+    ? Math.ceil(numberOfCustomerAcc / 10)
+    : 1;
 
   return (
     <AdminAuth>
@@ -301,12 +320,7 @@ const CustomerAccounts = (props) => {
                 currentpage={pageNumber}
                 setPageNumber={setPageNumber}
                 perPage={size}
-                totalPage={
-                  // Math.ceil(tablesNumber.length / 10)
-                  //   ? Math.ceil(tablesNumber.length / 10)
-                  //   : 1
-                  2
-                }
+                totalPage={totalPage}
                 searchFn={getAllCustomerRequest}
                 idx={parseInt(props.query.idx)}
                 headerChildren={undefined}

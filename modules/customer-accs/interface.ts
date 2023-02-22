@@ -8,6 +8,7 @@ export interface ICustomer {
   role: string;
   type: string;
   status: string;
+  active: boolean;
   subscriptionType: string;
   profileStatus: string;
   receivePromotionalMessagesOrDiscounts: boolean;

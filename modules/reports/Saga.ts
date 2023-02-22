@@ -26,10 +26,15 @@ const subsBody = {
   fourthDate: "2024-01-02",
 };
 
+const customersBody = {
+  filterByDateFrom: "2022-01-01",
+  filterByDateTo: "2023-01-02",
+};
+
 function* getAllLogsReports({ payload }) {
   const body = { ...defBody, ...payload };
   try {
-    yield put(actions.controlLogsReportsLoading(true));
+    yield put(actions.controlLogsReportsLoading(true, "logs"));
     const result = yield call(api.getLogsReports, body);
     yield put(actions.getAllLogsReportsSuccess(result.data));
   } catch (error) {
@@ -42,9 +47,22 @@ function* getAllLogsReports({ payload }) {
 function* getAllSubscriptionsReports({ payload }) {
   const body = { ...subsBody, ...payload };
   try {
-    yield put(actions.controlLogsReportsLoading(true));
+    yield put(actions.controlLogsReportsLoading(true, "subs"));
     const result = yield call(api.getSubscriptionsReports, body);
     yield put(actions.getAllSubscriptionsReportsSuccess(result.data));
+  } catch (error) {
+    extractErrorMsgFromResponse(error);
+  } finally {
+    yield put(actions.controlLogsReportsLoading(false));
+  }
+}
+
+function* getAllCustomersReports({ payload }) {
+  const body = { ...customersBody, ...payload };
+  try {
+    yield put(actions.controlLogsReportsLoading(true, "cust"));
+    const result = yield call(api.getCustomersReports, body);
+    yield put(actions.getAllCustomersReportsSuccess(result.data));
   } catch (error) {
     extractErrorMsgFromResponse(error);
   } finally {
@@ -57,5 +75,9 @@ export default function* tablesSagas() {
   yield takeLatest(
     Types.SEARCH_SUBSCRIPTIONS_REPORTS_REQUEST as any,
     getAllSubscriptionsReports
+  );
+  yield takeLatest(
+    Types.SEARCH_CUSTOMERS_LIST_REPORTS_REQUEST as any,
+    getAllCustomersReports
   );
 }

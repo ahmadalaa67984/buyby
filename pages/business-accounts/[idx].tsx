@@ -20,6 +20,8 @@ import {
   Button,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
   Heading,
   IconButton,
   Input,
@@ -32,6 +34,7 @@ import {
   RadioGroup,
   Select,
   Stack,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -42,6 +45,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DetailsModal from "@/components/core/modals/DetailsModal";
 import BusinessAccountModal from "@/components/core/modals/BusinessAccountModal";
 import AdminAuth from "@/components/auth/AdminAuth";
+import { activateUserRequest } from "@/modules/super-admin/Actions";
 
 const BusinessAccounts = (props) => {
   const router = useRouter();
@@ -62,9 +66,8 @@ const BusinessAccounts = (props) => {
     setSelected(data);
   };
 
-  const { businessAccs, isLoading, singleUser } = useSelector(
-    (state: RootState) => state.bussines
-  );
+  const { businessAccs, isLoading, singleUser, numberOfBusinessAcc } =
+    useSelector((state: RootState) => state.bussines);
 
   useEffect(() => {
     dispatch(
@@ -106,7 +109,22 @@ const BusinessAccounts = (props) => {
       // type: b?.subscriptionType,
       cphone: b?.phoneNumber,
       rnumber: b?.registrationNumber,
-      // taxId: b?.taxID,
+      actions: (
+        <FormControl display='flex' gridGap={4} alignItems='center' mt={4}>
+          <Switch
+            defaultChecked={b?.active}
+            onChange={(e) =>
+              dispatch(
+                activateUserRequest({
+                  active: e.target.checked,
+                  _id: b?._id,
+                })
+              )
+            }
+          />
+          <FormLabel>{b?.active ? "Active" : "Inactive"}</FormLabel>
+        </FormControl>
+      ),
     };
   });
 
@@ -167,10 +185,10 @@ const BusinessAccounts = (props) => {
       Header: "Register Number",
       accessor: "rnumber",
     },
-    // {
-    //   Header: "Tax ID",
-    //   accessor: "taxId",
-    // },
+    {
+      Header: "Activation",
+      accessor: "actions",
+    },
     {
       Header: "",
       accessor: "Actions",
@@ -222,7 +240,9 @@ const BusinessAccounts = (props) => {
   };
 
   console.log({ businessAccs, singleUser });
-  const totalPage = 2;
+  const totalPage = Math.ceil(numberOfBusinessAcc / 10)
+    ? Math.ceil(numberOfBusinessAcc / 10)
+    : 1;
 
   return (
     <AdminAuth>
@@ -279,12 +299,7 @@ const BusinessAccounts = (props) => {
                 currentpage={pageNumber}
                 setPageNumber={setPageNumber}
                 perPage={size}
-                totalPage={
-                  // Math.ceil(tablesNumber.length / 10)
-                  //   ? Math.ceil(tablesNumber.length / 10)
-                  //   : 1
-                  2
-                }
+                totalPage={totalPage}
                 searchFn={getAllBusinessAccountsRequest}
                 idx={parseInt(props.query.idx)}
                 headerChildren={undefined}

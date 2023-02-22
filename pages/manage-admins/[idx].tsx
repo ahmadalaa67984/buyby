@@ -2,18 +2,24 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/services/combinedReducers";
-import { getAllSuperAdminsRequest } from "@/modules/super-admin/Actions";
+import {
+  activateUserRequest,
+  getAllSuperAdminsRequest,
+} from "@/modules/super-admin/Actions";
 import {
   Box,
   Button,
   Divider,
   Flex,
+  FormControl,
+  FormLabel,
   Heading,
   Input,
   Progress,
   Radio,
   RadioGroup,
   Stack,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import CDashboardLayout from "@/components/layout/dashboardLayout/CDashboardLayout";
@@ -43,7 +49,7 @@ const SuperAdminsPage = (props) => {
     setSelected(data);
   };
 
-  const { superAdmins, isLoading } = useSelector(
+  const { superAdmins, isLoading, numberOfSuperAdmins } = useSelector(
     (state: RootState) => state.superAdmins
   );
 
@@ -79,6 +85,22 @@ const SuperAdminsPage = (props) => {
       //   name: admin?.name,
       email: admin?.email,
       phone: admin?.phoneNumber,
+      actions: (
+        <FormControl display='flex' gridGap={4} alignItems='center' mt={4}>
+          <Switch
+            defaultChecked={admin?.active}
+            onChange={(e) =>
+              dispatch(
+                activateUserRequest({
+                  active: e.target.checked,
+                  _id: admin?._id,
+                })
+              )
+            }
+          />
+          <FormLabel>{admin?.active ? "Active" : "Inactive"}</FormLabel>
+        </FormControl>
+      ),
     };
   });
 
@@ -131,10 +153,16 @@ const SuperAdminsPage = (props) => {
       Header: "Phone Number",
       accessor: "phoneNumber",
     },
+    {
+      Header: "Activation",
+      accessor: "actions",
+    },
   ];
 
-  const totalPage = 2;
-  console.log({ superAdmins });
+  const totalPage = Math.ceil(numberOfSuperAdmins / 10)
+    ? Math.ceil(numberOfSuperAdmins / 10)
+    : 1;
+  console.log({ superAdmins, numberOfSuperAdmins });
 
   return (
     <AdminAuth>
@@ -191,12 +219,7 @@ const SuperAdminsPage = (props) => {
                 currentpage={pageNumber}
                 setPageNumber={setPageNumber}
                 perPage={size}
-                totalPage={
-                  // Math.ceil(tablesNumber.length / 10)
-                  //   ? Math.ceil(tablesNumber.length / 10)
-                  //   : 1
-                  2
-                }
+                totalPage={totalPage}
                 searchFn={getAllSuperAdminsRequest}
                 idx={parseInt(props.query.idx)}
                 headerChildren={() => (
