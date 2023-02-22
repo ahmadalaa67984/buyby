@@ -3,8 +3,10 @@ import Types from "./Types";
 const INITIAL_STATE = {
   logsReports: [],
   subscriptions: [],
+  customersList: [],
   numberOfLogsReports: 0,
   isLoading: false,
+  component: "",
 };
 
 export default function reports(state = INITIAL_STATE, action) {
@@ -22,10 +24,17 @@ export default function reports(state = INITIAL_STATE, action) {
         subscriptions: payload,
       };
     }
+    case Types.SEARCH_CUSTOMERS_LIST_REPORTS_SUCCESS: {
+      return {
+        ...state,
+        customersList: payload,
+      };
+    }
     case Types.REPORTS_LOADING: {
       return {
         ...state,
-        isLoading: payload,
+        isLoading: payload.isLoading,
+        component: payload.component,
       };
     }
 

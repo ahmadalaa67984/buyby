@@ -1,5 +1,8 @@
 import DateRange from "@/components/core/dateRange";
-import { getAllSubscriptionsReportsRequest } from "@/modules/reports/Actions";
+import {
+  getAllCustomersReportsRequest,
+  getAllSubscriptionsReportsRequest,
+} from "@/modules/reports/Actions";
 import { RootState } from "@/services/combinedReducers";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
@@ -39,48 +42,39 @@ import React, { SetStateAction, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 
-const DSubscriptipons: React.FC<{
-  showSubscriptions: boolean;
-  setShowSubscriptions: Dispatch<SetStateAction<any>>;
-}> = ({ showSubscriptions, setShowSubscriptions }) => {
+const DCustomersList: React.FC<{
+  showCustomersList: boolean;
+  setShowCustomersList: Dispatch<SetStateAction<any>>;
+}> = ({ showCustomersList, setShowCustomersList }) => {
   const [filterDate, setFilterDate] = useState({
     firstDate: "",
     secondDate: "",
-    thirdDate: "",
-    fourthDate: "",
   });
   const dispatch = useDispatch();
 
-  const { subscriptions, isLoading } = useSelector(
+  const { customersList, isLoading } = useSelector(
     (state: RootState) => state.reports
   );
 
   useEffect(() => {
-    if (showSubscriptions) {
+    if (showCustomersList) {
       dispatch(
-        getAllSubscriptionsReportsRequest({
-          firstDate: moment(new Date()).subtract(1, "month").add(1, "day"),
-          secondDate: moment(new Date()).subtract(1, "month").add(1, "day"),
-          thirdDate: moment(new Date()).subtract(1, "month").add(1, "day"),
-          fourthDate: moment(new Date()).subtract(1, "month").add(1, "day"),
+        getAllCustomersReportsRequest({
+          filterByDateFrom: moment(new Date())
+            .subtract(1, "month")
+            .add(1, "day"),
+          filterByDateTo: moment(new Date()).subtract(1, "month").add(1, "day"),
         })
       );
     }
   }, [dispatch]);
 
   useEffect(() => {
-    if (
-      filterDate.firstDate &&
-      filterDate.secondDate &&
-      filterDate.thirdDate &&
-      filterDate.fourthDate
-    ) {
+    if (filterDate.firstDate && filterDate.secondDate) {
       dispatch(
-        getAllSubscriptionsReportsRequest({
-          firstDate: filterDate.firstDate,
-          secondDate: filterDate.secondDate,
-          thirdDate: filterDate.thirdDate,
-          fourthDate: filterDate.fourthDate,
+        getAllCustomersReportsRequest({
+          filterByDateFrom: filterDate.firstDate,
+          filterByDateTo: filterDate.secondDate,
         })
       );
     }
@@ -88,12 +82,12 @@ const DSubscriptipons: React.FC<{
 
   return (
     <Modal
-      onClose={() => setShowSubscriptions((prev: boolean) => !prev)}
+      onClose={() => setShowCustomersList((prev: boolean) => !prev)}
       size='full'
-      isOpen={showSubscriptions}>
+      isOpen={showCustomersList}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Subscriptions Reports</ModalHeader>
+        <ModalHeader>Customers Reports</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex gridGap={4} alignItems='center'>
@@ -133,32 +127,6 @@ const DSubscriptipons: React.FC<{
                         }}
                       />
                     </FormControl>
-                    <FormControl mb={3}>
-                      <FormLabel>Third Date</FormLabel>
-                      <Input
-                        type='date'
-                        value={filterDate.thirdDate}
-                        onChange={(e) => {
-                          setFilterDate({
-                            ...filterDate,
-                            thirdDate: e.target.value,
-                          });
-                        }}
-                      />
-                    </FormControl>
-                    <FormControl mb={3}>
-                      <FormLabel>Fourth Date</FormLabel>
-                      <Input
-                        type='date'
-                        value={filterDate.fourthDate}
-                        onChange={(e) => {
-                          setFilterDate({
-                            ...filterDate,
-                            fourthDate: e.target.value,
-                          });
-                        }}
-                      />
-                    </FormControl>
                   </MenuOptionGroup>
                 </MenuList>
               </Menu>
@@ -168,7 +136,7 @@ const DSubscriptipons: React.FC<{
             <Box p={8} textAlign='center'>
               <Spinner size={"md"} />
             </Box>
-          ) : subscriptions?.URL ? (
+          ) : customersList?.URL ? (
             <TableContainer mt={"50px"}>
               <Table variant='simple'>
                 <Thead>
@@ -179,8 +147,8 @@ const DSubscriptipons: React.FC<{
                 <Tbody>
                   <Tr>
                     <Td color='blue.500' cursor={"pointer"}>
-                      <a onClick={() => window.open(subscriptions?.URL)}>
-                        {subscriptions?.URL}
+                      <a onClick={() => window.open(customersList?.URL)}>
+                        {customersList?.URL}
                       </a>
                     </Td>
                   </Tr>
@@ -198,7 +166,7 @@ const DSubscriptipons: React.FC<{
         </ModalBody>
         <ModalFooter>
           <Button
-            onClick={() => setShowSubscriptions((prev: boolean) => !prev)}>
+            onClick={() => setShowCustomersList((prev: boolean) => !prev)}>
             Close
           </Button>
         </ModalFooter>
@@ -207,4 +175,4 @@ const DSubscriptipons: React.FC<{
   );
 };
 
-export default DSubscriptipons;
+export default DCustomersList;

@@ -20,7 +20,20 @@ export const getAllSubscriptionsReportsSuccess = (data) => ({
   payload: data,
 });
 
-export const controlLogsReportsLoading = (isLoading: boolean) => ({
+export const getAllCustomersReportsRequest = (body) => ({
+  type: Types.SEARCH_CUSTOMERS_LIST_REPORTS_REQUEST,
+  payload: body,
+});
+
+export const getAllCustomersReportsSuccess = (data) => ({
+  type: Types.SEARCH_CUSTOMERS_LIST_REPORTS_SUCCESS,
+  payload: data,
+});
+
+export const controlLogsReportsLoading = (
+  isLoading: boolean,
+  component?: string
+) => ({
   type: Types.REPORTS_LOADING,
-  payload: isLoading,
+  payload: { isLoading, component },
 });

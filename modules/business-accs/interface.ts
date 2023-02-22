@@ -7,9 +7,10 @@ export interface IBusiness {
   emailVerified: boolean;
   role: string;
   type: string;
+  active: boolean;
   subscriptionType: string;
   profileStatus: string;
   receivePromotionalMessagesOrDiscounts: boolean;
   taxID: string;
-  registrationNumber: string
+  registrationNumber: string;
 }

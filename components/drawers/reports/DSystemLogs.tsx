@@ -22,6 +22,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -230,7 +231,11 @@ const DSystemLogs: React.FC<{
               </Menu>
             </Box>
           </Flex>
-          {logsReports?.URL ? (
+          {isLoading ? (
+            <Box p={8} textAlign='center'>
+              <Spinner size={"md"} />
+            </Box>
+          ) : logsReports?.URL ? (
             <TableContainer mt={"50px"}>
               <Table variant='simple'>
                 <Thead>
@@ -250,10 +255,12 @@ const DSystemLogs: React.FC<{
               </Table>
             </TableContainer>
           ) : (
-            <Alert status='info' mt={6} borderRadius='md'>
-              <AlertIcon />
-              No data found
-            </Alert>
+            <Flex textAlign={"center"} justifyContent='center'>
+              <Alert status='info' mt={6} borderRadius='md' maxW={"200px"}>
+                <AlertIcon />
+                No data found
+              </Alert>
+            </Flex>
           )}
         </ModalBody>
         <ModalFooter>
