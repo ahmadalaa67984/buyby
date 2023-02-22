@@ -69,7 +69,7 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
     {
       icon: "/images/dashboard.png",
       name: "Reports",
-      link: "/reports/1",
+      link: "/reports",
       count: -1,
       subMenu: [],
       active: pathName?.includes("reports"),

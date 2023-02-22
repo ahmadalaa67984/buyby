@@ -65,9 +65,12 @@ const NotificationsPage = (props) => {
     setSelected(data);
   };
 
-  const { notifications, isLoading, singleNotification } = useSelector(
-    (state: RootState) => state.notification
-  );
+  const {
+    notifications,
+    isLoading,
+    singleNotification,
+    numberOfNotifications,
+  } = useSelector((state: RootState) => state.notification);
 
   useEffect(() => {
     if (selectedUser) {
@@ -285,9 +288,11 @@ const NotificationsPage = (props) => {
   };
 
   console.log({ selected });
-  const totalPage = 2;
+  console.log({ props, numberOfNotifications });
 
-  console.log({ props });
+  const totalPage = Math.ceil(numberOfNotifications / 10)
+    ? Math.ceil(numberOfNotifications / 10)
+    : 1;
 
   return (
     <AdminAuth>
@@ -316,12 +321,7 @@ const NotificationsPage = (props) => {
           currentpage={pageNumber}
           setPageNumber={setPageNumber}
           perPage={size}
-          totalPage={
-            // Math.ceil(tablesNumber.length / 10)
-            //   ? Math.ceil(tablesNumber.length / 10)
-            //   : 1
-            2
-          }
+          totalPage={totalPage}
           searchFn={
             selectedUser
               ? getAllNotificationsRequest

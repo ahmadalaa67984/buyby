@@ -3,7 +3,7 @@ import sysLogSagas from "../modules/system-logs/Saga";
 import notificationsSagas from "../modules/notifications/Saga";
 import customerSagas from "../modules/customer-accs/Saga";
 import businessSagas from "../modules/business-accs/Saga";
-import customerReportsSagas from "../modules/customer-reports/Saga";
+import customerReportsSagas from "../modules/reports/Saga";
 import businessReportsSagas from "../modules/business-reports/Saga";
 import subscriptionReportsSagas from "../modules/subscription-reports/Saga";
 import superAdminsSagas from "../modules/super-admin/Saga";

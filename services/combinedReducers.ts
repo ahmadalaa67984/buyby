@@ -4,7 +4,7 @@ import systemLogsReducer from "../modules/system-logs/Reducer";
 import notificationReducer from "../modules/notifications/Reducer";
 import customerReducer from "../modules/customer-accs/Reducer";
 import bussinesReducer from "../modules/business-accs/Reducer";
-import customerReportsReducer from "../modules/customer-reports/Reducer";
+import reportsReducer from "../modules/reports/Reducer";
 import businessReportsReducer from "../modules/business-reports/Reducer";
 import subscriptionReportsReducer from "../modules/subscription-reports/Reducer";
 import superAdminsReducer from "../modules/super-admin/Reducer";
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
   notification: notificationReducer,
   customer: customerReducer,
   bussines: bussinesReducer,
-  customerReports: customerReportsReducer,
+  reports: reportsReducer,
   businessReports: businessReportsReducer,
   subscriptionReports: subscriptionReportsReducer,
   superAdmins: superAdminsReducer,

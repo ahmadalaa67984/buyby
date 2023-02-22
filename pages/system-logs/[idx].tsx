@@ -55,7 +55,7 @@ const SystemLogs = (props) => {
     setSelected(data);
   };
 
-  const { sysLogs, isLoading, singleSysLog } = useSelector(
+  const { sysLogs, isLoading, singleSysLog, numberOfSystemLog } = useSelector(
     (state: RootState) => state.systemLogs
   );
 
@@ -213,8 +213,8 @@ const SystemLogs = (props) => {
   };
 
   // const totalPage = 2;
-  const totalPage = Math.ceil(data?.length / 10)
-    ? Math.ceil(data?.length / 10)
+  const totalPage = Math.ceil(numberOfSystemLog / 10)
+    ? Math.ceil(numberOfSystemLog / 10)
     : 1;
   console.log({
     selected,
@@ -223,6 +223,7 @@ const SystemLogs = (props) => {
     data,
     offset,
     size,
+    numberOfSystemLog,
   });
 
   return (

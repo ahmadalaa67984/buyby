@@ -5,7 +5,7 @@ import CDashboardLayout from "@/components/layout/dashboardLayout/CDashboardLayo
 import CTable from "@/components/table/CTable";
 import CustomersReportsEmptyPage from "@/components/tablesData/cust-reports/CustomersReportsEmptyPage";
 import CustomersEmptyPage from "@/components/tablesData/customers/CustomersEmptyPage";
-import { getAllCustomerReportsRequest } from "@/modules/customer-reports/Actions";
+import { getAllCustomerReportsRequest } from "@/modules/reports/Actions";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import { RootState } from "@/services/combinedReducers";
 import {
