@@ -75,12 +75,12 @@ const Reports = (props) => {
   //   useEffect(() => {
   //     dispatch(
   //       getAllCustomerReportsRequest({
-  //         offset: (parseInt(props.query.idx) - 1) * 10,
+  //         offset: (parseInt(router.query.idx) - 1) * 10,
   //         size,
   //         searchTerm: router.query.search,
   //       })
   //     );
-  //   }, [props.query]);
+  //   }, [router.query]);
 
   //   useEffect(() => {
   //     if (customerReports?.length > 0) setIsDataBefore(true);
@@ -206,8 +206,8 @@ const Reports = (props) => {
   return (
     <AdminAuth>
       <CDashboardLayout title='Reports' description='Reports' count={""}>
-        {parseInt(props.query.idx) <= 0 ||
-        totalPage < parseInt(props.query.idx) ? (
+        {parseInt(router.query.idx) <= 0 ||
+        totalPage < parseInt(router.query.idx) ? (
           <Flex
             w='100%'
             h='80vh'
@@ -290,7 +290,7 @@ const Reports = (props) => {
                   2
                 }
                 searchFn={getAllLogsReportsRequest}
-                idx={parseInt(props.query.idx)}
+                idx={parseInt(router.query.idx)}
                 headerChildren={undefined}
               />
             )}

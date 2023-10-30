@@ -36,6 +36,22 @@ export const menuData = (pathName: string, brnachId: string, token: string) => {
     },
     {
       icon: "/images/dashboard.png",
+      name: "Stock Items",
+      link: "/stockitems/1",
+      count: -1,
+      subMenu: [],
+      active: pathName?.includes("stockitems"),
+    },
+    {
+      icon: "/images/dashboard.png",
+      name: "Entities",
+      link: "/entities/1",
+      count: -1,
+      subMenu: [],
+      active: pathName?.includes("entities"),
+    },
+    {
+      icon: "/images/dashboard.png",
       name: "Customer Accounts",
       link: "/customer-accounts/1",
       count: -1,

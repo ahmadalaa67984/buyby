@@ -10,6 +10,8 @@ import subscriptionReportsReducer from "../modules/subscription-reports/Reducer"
 import superAdminsReducer from "../modules/super-admin/Reducer";
 import authReducer from "../modules/auth/Reducer";
 import userReducer from "../modules/user/Reducer";
+import stockitemsReducer from "../modules/stockitems/Reducer";
+import entitiesReducer from "../modules/entities/Reducer";
 
 const rootReducer = combineReducers({
   drawer: drawerReducer,
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
   superAdmins: superAdminsReducer,
   auth: authReducer,
   user: userReducer,
+  stockitems: stockitemsReducer,
+  entities: entitiesReducer,
 });
 
 export default rootReducer;

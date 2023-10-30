@@ -32,6 +32,7 @@ const Dashboard = () => {
   const [showSubscriptions, setShowSubscriptions] = useState<boolean>(false);
   const [showCustomersList, setShowCustomersList] = useState<boolean>(false);
 
+  if (typeof window == "undefined") return null;
   return (
     <AdminAuth>
       <CDashboardLayout title={"Dashboard"} description='Dashboard' count={""}>

@@ -70,12 +70,12 @@ const CustomerAccounts = (props) => {
   useEffect(() => {
     dispatch(
       getAllCustomerRequest({
-        offset: (parseInt(props.query.idx) - 1) * 10,
+        offset: (parseInt(router.query.idx) - 1) * 10,
         size,
         searchTerm: router.query.search,
       })
     );
-  }, [props.query, dispatch, router.query.search, size]);
+  }, [router.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (customerAccs?.length > 0) setIsDataBefore(true);
@@ -271,8 +271,8 @@ const CustomerAccounts = (props) => {
         title='Customer Accounts'
         description='Customer Accounts'
         count={""}>
-        {parseInt(props.query.idx) <= 0 ||
-        totalPage < parseInt(props.query.idx) ? (
+        {parseInt(router.query.idx) <= 0 ||
+        totalPage < parseInt(router.query.idx) ? (
           <Flex
             w='100%'
             h='80vh'
@@ -322,7 +322,7 @@ const CustomerAccounts = (props) => {
                 perPage={size}
                 totalPage={totalPage}
                 searchFn={getAllCustomerRequest}
-                idx={parseInt(props.query.idx)}
+                idx={parseInt(router.query.idx)}
                 headerChildren={undefined}
               />
             )}

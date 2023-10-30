@@ -72,12 +72,12 @@ const BusinessAccounts = (props) => {
   useEffect(() => {
     dispatch(
       getAllBusinessAccountsRequest({
-        offset: (parseInt(props.query.idx) - 1) * 10,
+        offset: (parseInt(router.query.idx) - 1) * 10,
         size,
         searchTerm: router.query.search,
       })
     );
-  }, [props.query, dispatch, router.query.search, size]);
+  }, [router.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (businessAccs?.length > 0) setIsDataBefore(true);
@@ -250,8 +250,8 @@ const BusinessAccounts = (props) => {
         title='Business Accounts'
         description='Business Accounts'
         count={""}>
-        {parseInt(props.query.idx) <= 0 ||
-        totalPage < parseInt(props.query.idx) ? (
+        {parseInt(router.query.idx) <= 0 ||
+        totalPage < parseInt(router.query.idx) ? (
           <Flex
             w='100%'
             h='80vh'
@@ -301,7 +301,7 @@ const BusinessAccounts = (props) => {
                 perPage={size}
                 totalPage={totalPage}
                 searchFn={getAllBusinessAccountsRequest}
-                idx={parseInt(props.query.idx)}
+                idx={parseInt(router.query.idx)}
                 headerChildren={undefined}
               />
             )}

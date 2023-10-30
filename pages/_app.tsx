@@ -10,7 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
-axios.defaults.baseURL = "https://buy-by-1.herokuapp.com/api";
+axios.defaults.baseURL = process.env.BACKEND_URL;
 axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
   "token"
 )}`;

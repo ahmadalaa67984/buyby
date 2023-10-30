@@ -122,8 +122,8 @@ const SubscriptionReports = (props) => {
         title='Subscription Reports'
         description='Subscription Reports'
         count={""}>
-        {parseInt(props.query.idx) <= 0 ||
-        totalPage < parseInt(props.query.idx) ? (
+        {parseInt(router.query.idx) <= 0 ||
+        totalPage < parseInt(router.query.idx) ? (
           <Flex
             w='100%'
             h='80vh'
@@ -195,7 +195,7 @@ const SubscriptionReports = (props) => {
                   2
                 }
                 searchFn={getSubReportsMTMRequest}
-                idx={parseInt(props.query.idx)}
+                idx={parseInt(router.query.idx)}
                 headerChildren={undefined}
               />
             )}

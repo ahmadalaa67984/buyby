@@ -56,12 +56,12 @@ const SuperAdminsPage = (props) => {
   useEffect(() => {
     dispatch(
       getAllSuperAdminsRequest({
-        offset: (parseInt(props.query.idx) - 1) * 10,
+        offset: (parseInt(router.query.idx) - 1) * 10,
         size,
         searchTerm: router.query.search,
       })
     );
-  }, [props.query, dispatch, router.query.search, size]);
+  }, [router.query, dispatch, router.query.search, size]);
 
   useEffect(() => {
     if (superAdmins?.length > 0) setIsDataBefore(true);
@@ -170,8 +170,8 @@ const SuperAdminsPage = (props) => {
         title='Super Admins'
         description='Super Admins'
         count={""}>
-        {parseInt(props.query.idx) <= 0 ||
-        totalPage < parseInt(props.query.idx) ? (
+        {parseInt(router.query.idx) <= 0 ||
+        totalPage < parseInt(router.query.idx) ? (
           <Flex
             w='100%'
             h='80vh'
@@ -221,7 +221,7 @@ const SuperAdminsPage = (props) => {
                 perPage={size}
                 totalPage={totalPage}
                 searchFn={getAllSuperAdminsRequest}
-                idx={parseInt(props.query.idx)}
+                idx={parseInt(router.query.idx)}
                 headerChildren={() => (
                   <>
                     <CreateButton

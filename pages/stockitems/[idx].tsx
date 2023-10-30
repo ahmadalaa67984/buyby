@@ -28,22 +28,17 @@ import { RootState } from "@/services/combinedReducers";
 import DeleteModel from "@/components/core/modals/DeleteModel";
 import DetailsModal from "@/components/core/modals/DetailsModal";
 import {
-  deleteNotificationRequest,
-  getAllNotificationsRequest,
-  getAllUserNotificationsRequest,
-  getNotificationRequest,
-} from "@/modules/notifications/Actions";
-import NotificationDetailsModal from "@/components/core/modals/NotificationDetailsModal";
+  deleteStockitemRequest,
+  getAllStockitemRequest,
+  getAllUserStockitemRequest,
+  getStockitemRequest,
+} from "@/modules/stockitems/Actions";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import CreateButton from "@/components/core/buttons/CreateButton";
-import ActionsNotifications from "@/components/drawers/notifications/ActionsNotifications";
-import UserNotificationsModal from "@/components/core/modals/UserNotificationsModal";
 import axios from "axios";
-import NotificationsEmptyPage from "@/components/tablesData/notifications/NotificationsEmptyPage";
-import { INotification } from "@/modules/notifications/interface";
 import AdminAuth from "@/components/auth/AdminAuth";
 
-const NotificationsPage = (props) => {
+const StockitemsPage = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [offset, setPage] = useState(0);
@@ -54,7 +49,7 @@ const NotificationsPage = (props) => {
   const [dir, setDir] = useState("asc");
   const [selectedUser, setSelectedUser] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
-  const [userNotificationsModal, setUserNotificationsModal] = useState(false);
+  const [userStockitemsModal, setUserStockitemsModal] = useState(false);
   const [sort, setSort] = useState("createdAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -65,111 +60,50 @@ const NotificationsPage = (props) => {
     setSelected(data);
   };
 
-  const {
-    notifications,
-    isLoading,
-    singleNotification,
-    numberOfNotifications,
-  } = useSelector((state: RootState) => state.notification);
+  const { stockitems, isLoading, singleStockitem, numberOfStockitems } =
+    useSelector((state: RootState) => state.stockitems);
 
   useEffect(() => {
-    if (selectedUser) {
-      dispatch(
-        getAllUserNotificationsRequest({
-          id: selectedUser,
-          formData: {
-            offset: (parseInt(router.query.idx) - 1) * 10,
-            size,
-            searchTerm: router.query.search,
-          },
-        })
-      );
-    } else {
-      dispatch(
-        getAllNotificationsRequest({
-          offset: (parseInt(router.query.idx) - 1) * 10,
-          size,
-          searchTerm: router.query.search,
-        })
-      );
-    }
-  }, [router.query, dispatch, router.query.search, size, selectedUser]);
+    dispatch(
+      getAllStockitemRequest({
+        offset: (parseInt(router.query.idx) - 1) * 10,
+        size,
+        searchTerm: router.query.search,
+      })
+    );
+  }, [router.query, size]);
 
   useEffect(() => {
-    if (notifications?.length > 0) setIsDataBefore(true);
-  }, [notifications]);
-
-  useEffect(() => {
-    if (selectedUser) {
-      dispatch(
-        getAllUserNotificationsRequest({
-          id: selectedUser,
-          formData: {
-            offset: (parseInt(router.query.idx) - 1) * 10,
-            size,
-            searchTerm: router.query.search,
-            dir,
-            sort,
-            filterByDateFrom: startDate,
-            filterByDateTo: endDate,
-          },
-        })
-      );
-    } else {
-      dispatch(
-        getAllNotificationsRequest({
-          dir,
-          sort,
-          filterByDateFrom: startDate,
-          filterByDateTo: endDate,
-        })
-      );
-    }
-  }, [
-    dir,
-    sort,
-    startDate,
-    endDate,
-    selectedUser,
-    dispatch,
-    router.query.idx,
-    size,
-    router.query.search,
-  ]);
+    if (stockitems?.length > 0) setIsDataBefore(true);
+  }, [stockitems]);
 
   const onSubmitDelete = () => {
-    dispatch(deleteNotificationRequest(selected));
+    dispatch(deleteStockitemRequest(selected));
   };
 
   const handleDetails = () => {
-    dispatch(getNotificationRequest(selected));
+    dispatch(getStockitemRequest(selected));
     setDetailsModal(!detailsModal);
   };
 
-  const data = notifications?.map((notify: INotification) => {
+  const data = stockitems?.map((notify: any) => {
     return {
       ...notify,
       id: notify?._id,
-      title: notify?.notificationData?.title,
-      body: notify?.notificationData?.body,
+      title: notify?.stockitemData?.title,
+      body: notify?.stockitemData?.body,
       imageUrl: (
         <Box color='blue.500'>
           <a
-            href={notify?.notificationData?.imageUrl}
+            href={notify?.stockitemData?.imageUrl}
             target='_blank'
             rel='noopener noreferrer'>
-            {notify?.notificationData?.imageUrl}
+            {notify?.stockitemData?.imageUrl}
           </a>
         </Box>
       ),
     };
   });
-
-  let users = [
-    ...new Map(notifications?.map((item) => [item["userId"], item])).values(),
-  ];
-
-  console.log({ notifications, selectedUser });
 
   const filterList = (
     <Box p='5'>
@@ -204,9 +138,9 @@ const NotificationsPage = (props) => {
           onChange={(e) => setEndDate(e.target.valueAsDate)}
         />
       </Box>
-      <Box mt={4}>
+      {/* <Box mt={4}>
         <Text as='b' p={"1"}>
-          User Notifications
+          User Stockitems
         </Text>
         <Select
           mt={2}
@@ -222,7 +156,7 @@ const NotificationsPage = (props) => {
             </option>
           ))}
         </Select>
-      </Box>
+      </Box> */}
     </Box>
   );
 
@@ -288,18 +222,15 @@ const NotificationsPage = (props) => {
   };
 
   console.log({ selected });
-  console.log({ props, numberOfNotifications });
+  console.log({ props, numberOfStockitems });
 
-  const totalPage = Math.ceil(numberOfNotifications / 10)
-    ? Math.ceil(numberOfNotifications / 10)
+  const totalPage = Math.ceil(numberOfStockitems / 10)
+    ? Math.ceil(numberOfStockitems / 10)
     : 1;
 
   return (
     <AdminAuth>
-      <CDashboardLayout
-        title='Notifications'
-        description='Notifications'
-        count={""}>
+      <CDashboardLayout title='Stockitems' description='Stockitems' count={""}>
         <CTable
           selectedData={viewData}
           footerBtnTitle={false}
@@ -312,10 +243,10 @@ const NotificationsPage = (props) => {
           Columns={columns}
           Actions={<></>}
           ActionsData={(data) => actions(data)}
-          Title='Notifications Management'
-          subTitle={`Create, search, view and delete notifications.`}
+          Title='Stockitems Management'
+          subTitle={`Create, search, view and delete stockitems.`}
           btnTitle=''
-          placeHolder='Search for notifications...'
+          placeHolder='Search for stockitems...'
           setPage={setPage}
           setPerPage={setPerPage}
           currentpage={pageNumber}
@@ -323,17 +254,15 @@ const NotificationsPage = (props) => {
           perPage={size}
           totalPage={totalPage}
           searchFn={
-            selectedUser
-              ? getAllNotificationsRequest
-              : getAllNotificationsRequest
+            selectedUser ? getAllStockitemRequest : getAllStockitemRequest
           }
           idx={parseInt(router.query.idx)}
           headerChildren={() => (
             <>
               <CreateButton
-                btnTitle='Create Notification'
+                btnTitle='Create Stockitem'
                 onClick={() =>
-                  dispatch(drawerActionToggle(true, "New", "notification"))
+                  dispatch(drawerActionToggle(true, "New", "stockitem"))
                 }
               />
             </>
@@ -347,7 +276,7 @@ const NotificationsPage = (props) => {
           align='center'
           justify='center'
           direction='column'>
-          <Heading size='lg'>Notifications</Heading>
+          <Heading size='lg'>Stockitems</Heading>
           <Button
             color='blue.500'
             bg='blue500'
@@ -358,12 +287,12 @@ const NotificationsPage = (props) => {
                 query: { ...router.query, idx: 1 },
               });
             }}>
-            Back to Notifications
+            Back to Stockitems
           </Button>
         </Flex>
       ) : (
         <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <NotificationsEmptyPage />}
+          {data?.length === 0 && !isDataBefore && <StockitemsEmptyPage />}
           {isLoading && <Progress size='xs' isIndeterminate />}
 
           {isDataBefore && (
@@ -379,10 +308,10 @@ const NotificationsPage = (props) => {
               Columns={columns}
               Actions={<></>}
               ActionsData={(data) => actions(data)}
-              Title='Notifications Management'
-              subTitle={`Create, search, view and delete notifications.`}
+              Title='Stockitems Management'
+              subTitle={`Create, search, view and delete stockitems.`}
               btnTitle=''
-              placeHolder='Search for notifications...'
+              placeHolder='Search for stockitems...'
               setPage={setPage}
               setPerPage={setPerPage}
               currentpage={pageNumber}
@@ -394,14 +323,14 @@ const NotificationsPage = (props) => {
                 //   : 1
                 2
               }
-              searchFn={getAllNotificationsRequest}
+              searchFn={getAllStockitemRequest}
               idx={parseInt(router.query.idx)}
               headerChildren={() => (
                 <>
                   <CreateButton
-                    btnTitle='Create Notification'
+                    btnTitle='Create Stockitem'
                     onClick={() =>
-                      dispatch(drawerActionToggle(true, "New", "notification"))
+                      dispatch(drawerActionToggle(true, "New", "stockitem"))
                     }
                   />
                 </>
@@ -410,30 +339,30 @@ const NotificationsPage = (props) => {
           )}
         </Box>
       )} */}
-        <ActionsNotifications />
-        <DeleteModel
-          name={singleNotification?.action}
+        {/* <ActionsStockitems /> */}
+        {/* <DeleteModel
+          name={singleStockitem?.action}
           deleteModal={deleteModal}
           setDeleteModal={setDeleteModal}
           onSubmit={onSubmitDelete}
-        />
-        <NotificationDetailsModal
+        /> */}
+        {/* <StockitemDetailsModal
           detailsModal={detailsModal}
           setDetailsModal={setDetailsModal}
-          item={singleNotification}
-        />
-        {/* <UserNotificationsModal
-        userNotificationsModal={userNotificationsModal}
-        setUserNotificationsModal={setUserNotificationsModal}
-        userNotifications={userNotifications}
+          item={singleStockitem}
+        /> */}
+        {/* <UserStockitemsModal
+        userStockitemsModal={userStockitemsModal}
+        setUserStockitemsModal={setUserStockitemsModal}
+        userStockitems={userStockitems}
       /> */}
       </CDashboardLayout>
     </AdminAuth>
   );
 };
 
-export default NotificationsPage;
+export default StockitemsPage;
 
-NotificationsPage.getInitialProps = async (ctx: { query: any }) => {
+StockitemsPage.getInitialProps = async (ctx: { query: any }) => {
   return { query: ctx.query };
 };
