@@ -427,9 +427,9 @@ const Upload = (props) => {
                 marginTop: "4px",
               }}
             />
-            <p style={{ paddingLeft: "18px", color: "red" }}>
+            <Text style={{ paddingLeft: "18px", color: "red" }}>
               {errors[data.name].message}
-            </p>
+            </Text>
             <FormErrorMessage pl='6'>
               {errors[data.name].message}
             </FormErrorMessage>
@@ -464,7 +464,7 @@ const Upload = (props) => {
                     style={{ opacity: 0, display: "none", color: "black" }}
                   />
                   <Flex direction='column'>
-                    <p
+                    <Text
                       style={{
                         textOverflow: "ellipsis",
                         overflow: "hidden",
@@ -480,9 +480,9 @@ const Upload = (props) => {
                         .split(".")
                         .slice(0, -1)
                         .join(".")}
-                    </p>
+                    </Text>
                     {fileSize && (
-                      <p
+                      <Text
                         style={{
                           textOverflow: "ellipsis",
                           overflow: "hidden",
@@ -498,7 +498,7 @@ const Upload = (props) => {
                           fileSize,
                           true
                         )}`}
-                      </p>
+                      </Text>
                     )}
                   </Flex>
                 </Box>

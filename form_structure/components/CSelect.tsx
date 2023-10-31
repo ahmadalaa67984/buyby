@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, FormControl, FormLabel, Select } from "@chakra-ui/react";
+import { Box, FormControl, FormLabel, Select, Text } from "@chakra-ui/react";
 import { AiFillWarning } from "react-icons/ai";
 import useTranslation from "../../assets/lang";
 // import ReactSelect from 'react-select';
@@ -74,13 +74,13 @@ const CSelect = ({ data, errors, register }) => {
                 marginTop: "4px",
               }}
             />
-            <p
+            <Text
               style={{
                 color: "red",
                 paddingLeft: "25px",
               }}>
               {selectInput[errors[data.name].message]}
-            </p>
+            </Text>
           </div>
         ) : null}
       </FormControl>

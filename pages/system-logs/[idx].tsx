@@ -43,9 +43,9 @@ const SystemLogs = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
-  const [dir, setDir] = useState("asc");
+  const [dir, setDir] = useState("desc");
   const [deleteModal, setDeleteModal] = useState(false);
-  const [sort, setSort] = useState("createdAt");
+  const [sort, setSort] = useState("updatedAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selected, setSelected] = useState<any>();
@@ -60,29 +60,34 @@ const SystemLogs = (props) => {
   );
 
   useEffect(() => {
-    dispatch(
-      getAllSystemLogsRequest({
-        offset: (parseInt(router.query.idx) - 1) * 10,
-        size,
-        searchTerm: router.query.search,
-      })
-    );
-  }, [router.query, dispatch, router.query.search, size]);
-
-  useEffect(() => {
     if (sysLogs?.length > 0) setIsDataBefore(true);
   }, [sysLogs]);
 
   useEffect(() => {
-    dispatch(
-      getAllSystemLogsRequest({
-        dir,
-        sort,
-        filterByDateFrom: startDate,
-        filterByDateTo: endDate,
-      })
-    );
-  }, [dir, sort, startDate, endDate, dispatch]);
+    let timeId = setTimeout(() => {
+      dispatch(
+        getAllSystemLogsRequest({
+          offset: (parseInt(router.query.idx) - 1) * 10,
+          size,
+          searchTerm: router.query.search,
+          dir,
+          sort,
+          filterByDateFrom: startDate,
+          filterByDateTo: endDate,
+        })
+      );
+    }, 500);
+    return () => clearTimeout(timeId);
+  }, [
+    dir,
+    sort,
+    startDate,
+    endDate,
+    dispatch,
+    size,
+    router.query.idx,
+    router.query.search,
+  ]);
 
   const onSubmitDelete = () => {
     dispatch(deleteSystemLogRequest(selected));
@@ -100,6 +105,7 @@ const SystemLogs = (props) => {
       action: sysLog?.action,
       username: sysLog?.user?.name,
       email: sysLog?.user?.email,
+      updateDate: new Date(sysLog?.updatedAt)?.toLocaleDateString(),
       role: sysLog?.user?.role,
       // subscriptionType: sysLog?.user?.subscriptionType,
     };
@@ -160,10 +166,11 @@ const SystemLogs = (props) => {
       Header: "Role",
       accessor: "role",
     },
-    // {
-    //   Header: "Subscription Type",
-    //   accessor: "subscriptionType",
-    // },
+    {
+      Header: "Date",
+      accessor: "updateDate",
+    },
+
     {
       Header: "",
       accessor: "Actions",

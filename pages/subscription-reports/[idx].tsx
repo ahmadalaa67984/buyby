@@ -51,8 +51,8 @@ const SubscriptionReports = (props) => {
   const [size, setPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
-  const [dir, setDir] = useState("asc");
-  const [sort, setSort] = useState("createdAt");
+  const [dir, setDir] = useState("desc");
+  const [sort, setSort] = useState("updatedAt");
   const [stateOfDate, setStateOfDate] = useState([
     {
       startDate: null,

@@ -192,7 +192,7 @@ const FormIndex = ({
                           marginTop: "4px",
                         }}
                       />
-                      <p
+                      <Text
                         style={{
                           color: "red",
                           paddingLeft: "20px",
@@ -200,7 +200,7 @@ const FormIndex = ({
                         }}>
                         {/* {formIndexLang["mandatory_field"]} */}
                         Mandatory Field
-                      </p>
+                      </Text>
                     </div>
                   ) : null}
                 </GridItem>

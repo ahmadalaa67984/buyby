@@ -38,8 +38,8 @@ const SuperAdminsPage = (props) => {
   const [size, setPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
-  const [dir, setDir] = useState("asc");
-  const [sort, setSort] = useState("createdAt");
+  const [dir, setDir] = useState("desc");
+  const [sort, setSort] = useState("updatedAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selected, setSelected] = useState<any>();

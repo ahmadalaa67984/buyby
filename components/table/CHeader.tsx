@@ -71,7 +71,7 @@ const CHeader = ({
     const timeId = setTimeout(() => {
       if (value !== null) {
         pushQuery(router, { search: value });
-        dispatch(searchFn({ searchTerm: value }));
+        // dispatch(searchFn({ searchTerm: value }));
       }
     }, 500);
 

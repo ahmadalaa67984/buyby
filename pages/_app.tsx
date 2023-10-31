@@ -9,6 +9,8 @@ import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 axios.defaults.baseURL = process.env.BACKEND_URL;
 axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
@@ -17,12 +19,20 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
 
 export default function App({ Component, pageProps }: AppProps) {
   console.log(process.env.BACKEND_URL, "BACKEND_URL");
+  const [showChild, setShowChild] = useState(false);
 
+  useEffect(() => {
+    setShowChild(true);
+  }, []);
+
+  if (!showChild) {
+    return null;
+  }
   return (
     <Provider store={store}>
       <ChakraProvider theme={theme}>
         <CRtlProvider>
-          <Component {...pageProps} />
+          {<Component {...pageProps} />}
           <ToastContainer
             position='top-right'
             autoClose={7000}

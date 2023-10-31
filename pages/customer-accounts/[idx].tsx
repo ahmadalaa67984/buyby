@@ -51,8 +51,8 @@ const CustomerAccounts = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
-  const [dir, setDir] = useState("asc");
-  const [sort, setSort] = useState("createdAt");
+  const [dir, setDir] = useState("desc");
+  const [sort, setSort] = useState("updatedAt");
   const [isRecievePromotional, setIsRecievePromotional] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

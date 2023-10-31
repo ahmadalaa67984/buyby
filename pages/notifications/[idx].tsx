@@ -51,11 +51,11 @@ const NotificationsPage = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
-  const [dir, setDir] = useState("asc");
+  const [dir, setDir] = useState("desc");
   const [selectedUser, setSelectedUser] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [userNotificationsModal, setUserNotificationsModal] = useState(false);
-  const [sort, setSort] = useState("createdAt");
+  const [sort, setSort] = useState("updatedAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selected, setSelected] = useState<any>();
@@ -73,58 +73,40 @@ const NotificationsPage = (props) => {
   } = useSelector((state: RootState) => state.notification);
 
   useEffect(() => {
-    if (selectedUser) {
-      dispatch(
-        getAllUserNotificationsRequest({
-          id: selectedUser,
-          formData: {
-            offset: (parseInt(router.query.idx) - 1) * 10,
-            size,
-            searchTerm: router.query.search,
-          },
-        })
-      );
-    } else {
-      dispatch(
-        getAllNotificationsRequest({
-          offset: (parseInt(router.query.idx) - 1) * 10,
-          size,
-          searchTerm: router.query.search,
-        })
-      );
-    }
-  }, [router.query, dispatch, router.query.search, size, selectedUser]);
-
-  useEffect(() => {
     if (notifications?.length > 0) setIsDataBefore(true);
   }, [notifications]);
 
   useEffect(() => {
-    if (selectedUser) {
-      dispatch(
-        getAllUserNotificationsRequest({
-          id: selectedUser,
-          formData: {
+    let timeId = setTimeout(() => {
+      if (selectedUser) {
+        dispatch(
+          getAllUserNotificationsRequest({
+            id: selectedUser,
+            formData: {
+              offset: (parseInt(router.query.idx) - 1) * 10,
+              size,
+              searchTerm: router.query.search,
+              dir,
+              sort,
+              filterByDateFrom: startDate,
+              filterByDateTo: endDate,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          getAllNotificationsRequest({
             offset: (parseInt(router.query.idx) - 1) * 10,
             size,
-            searchTerm: router.query.search,
             dir,
             sort,
+            searchTerm: router.query.search,
             filterByDateFrom: startDate,
             filterByDateTo: endDate,
-          },
-        })
-      );
-    } else {
-      dispatch(
-        getAllNotificationsRequest({
-          dir,
-          sort,
-          filterByDateFrom: startDate,
-          filterByDateTo: endDate,
-        })
-      );
-    }
+          })
+        );
+      }
+    }, 500);
   }, [
     dir,
     sort,

@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   IconButton,
+  Image,
   Input,
   Menu,
   MenuButton,
@@ -45,11 +46,11 @@ const EntitiesPage = (props) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
-  const [dir, setDir] = useState("asc");
+  const [dir, setDir] = useState("desc");
   const [selectedUser, setSelectedUser] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [userEntitiesModal, setUserEntitiesModal] = useState(false);
-  const [sort, setSort] = useState("createdAt");
+  const [sort, setSort] = useState("updatedAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selected, setSelected] = useState<any>();
@@ -69,9 +70,22 @@ const EntitiesPage = (props) => {
         offset: (parseInt(router.query.idx) - 1) * 10,
         size,
         searchTerm: router.query.search,
+        dir,
+        sort,
+        filterByDateFrom: startDate,
+        filterByDateTo: endDate,
       })
     );
-  }, [router.query, size]);
+  }, [
+    dir,
+    dispatch,
+    endDate,
+    router.query.idx,
+    router.query.search,
+    size,
+    sort,
+    startDate,
+  ]);
 
   useEffect(() => {
     if (entities?.length > 0) setIsDataBefore(true);
@@ -86,21 +100,22 @@ const EntitiesPage = (props) => {
     setDetailsModal(!detailsModal);
   };
 
-  const data = entities?.map((notify: any) => {
+  const data = entities?.map((entity: any) => {
     return {
-      ...notify,
-      id: notify?._id,
-      title: notify?.entityData?.title,
-      body: notify?.entityData?.body,
-      imageUrl: (
-        <Box color='blue.500'>
-          <a
-            href={notify?.entityData?.imageUrl}
-            target='_blank'
-            rel='noopener noreferrer'>
-            {notify?.entityData?.imageUrl}
-          </a>
-        </Box>
+      ...entity,
+      name: entity?.name,
+      phoneNumber: entity?.phoneNumber,
+      type: entity?.entityType == "STORE" ? "Store" : "Merchant",
+      updateDate: new Date(entity?.updatedAt)?.toLocaleDateString(),
+      image: (
+        <Image
+          src={entity?.logo}
+          alt={entity?.name}
+          w='55px'
+          h='55px'
+          rounded='xl'
+          objectFit='cover'
+        />
       ),
     };
   });
@@ -162,17 +177,30 @@ const EntitiesPage = (props) => {
 
   const columns = [
     {
-      Header: "Title",
-      accessor: "title",
+      Header: "Image",
+      accessor: "image",
     },
     {
-      Header: "Description",
-      accessor: "body",
+      Header: "Name",
+      accessor: "name",
     },
     {
-      Header: "Image URL",
-      accessor: "imageUrl",
+      Header: "Phone",
+      accessor: "phoneNumber",
     },
+    {
+      Header: "Type",
+      accessor: "type",
+    },
+    {
+      Header: "SKU",
+      accessor: "sku",
+    },
+    {
+      Header: "Update Date",
+      accessor: "updateDate",
+    },
+
     {
       Header: "",
       accessor: "Actions",
@@ -201,19 +229,10 @@ const EntitiesPage = (props) => {
                 color: "primary",
               }}
               icon={<CgEyeAlt fontSize='25px' color='#5211A5' />}
-              onClick={() => handleDetails()}>
-              See Details
-            </MenuItem>
-            <MenuItem
-              p={3}
-              fontWeight='black'
-              _hover={{
-                bg: "primary_variants.100",
-                color: "primary",
-              }}
-              icon={<CgTrash fontSize='25px' color='#5211A5' />}
-              onClick={() => setDeleteModal(true)}>
-              Delete
+              onClick={() =>
+                router?.push(`/stockitems/1?idx=1&entity=${data?._id}`)
+              }>
+              Show Items
             </MenuItem>
           </MenuList>
         </Menu>
@@ -244,7 +263,7 @@ const EntitiesPage = (props) => {
           Actions={<></>}
           ActionsData={(data) => actions(data)}
           Title='Entities Management'
-          subTitle={`Create, search, view and delete entities.`}
+          subTitle={` search entities.`}
           btnTitle=''
           placeHolder='Search for entities...'
           setPage={setPage}
@@ -257,12 +276,12 @@ const EntitiesPage = (props) => {
           idx={parseInt(router.query.idx)}
           headerChildren={() => (
             <>
-              <CreateButton
+              {/* <CreateButton
                 btnTitle='Create Entity'
                 onClick={() =>
                   dispatch(drawerActionToggle(true, "New", "entity"))
                 }
-              />
+              /> */}
             </>
           )}
         />
