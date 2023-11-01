@@ -139,8 +139,9 @@ a {
 }
 
 .stock-text {
-  background-color: #5211a5;
+  /* background-color: #5211a5; */
+  /* border-radius: 10px; */
   color: white;
   font-size: 16px;
-  padding: 16px 32px;
+  /* padding: 16px 32px; */
 }

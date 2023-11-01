@@ -350,7 +350,7 @@ const Upload = (props) => {
                           color='#748496'
                           style={{ textDecoration: "underline" }}>
                           {/* {uploadComponent['upload_header']} */}
-                          Header
+                          {/* Header */}
                         </a>
                       )}
                     </Box>

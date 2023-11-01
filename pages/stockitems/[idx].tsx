@@ -49,7 +49,7 @@ import { drawerActionToggle } from "@/modules/drawer/Actions";
 import CreateButton from "@/components/core/buttons/CreateButton";
 import axios from "axios";
 import AdminAuth from "@/components/auth/AdminAuth";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiFillStar, AiOutlineEdit, AiOutlineStar } from "react-icons/ai";
 import { extractErrorMsgFromResponse } from "@/utils/apiHelpers";
 import { pushQuery } from "@/utils";
 import FormIndex from "@/components/forms/FormIndex";
@@ -83,6 +83,7 @@ const StockitemsPage = (props) => {
   const [offset, setPage] = useState(0);
   const [size, setPerPage] = useState(30);
   const [pageNumber, setPageNumber] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(router.query.search);
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
   const [dir, setDir] = useState("desc");
@@ -111,7 +112,9 @@ const StockitemsPage = (props) => {
         `/stock-item-data/customer/search`,
         body
       );
-      setStockItems([...stockitems, ...data?.content]);
+      if ((searchTerm && offset == 0) || offset == 0) {
+        setStockItems([...data?.content]);
+      } else setStockItems([...stockitems, ...data?.content]);
       setNumberStockItems(data?.count);
     } catch (error) {
       extractErrorMsgFromResponse(error);
@@ -120,16 +123,26 @@ const StockitemsPage = (props) => {
     }
   };
   useEffect(() => {
-    getItems({
-      dir,
-      endDate,
-      offset,
-      searchTerm: router.query.search,
-      size,
-      sort,
-      startDate,
-    });
-  }, [dir, endDate, offset, router.query.search, size, sort, startDate]);
+    let timeId = setTimeout(() => {
+      const filterBy: any = [];
+      if (router?.query?.entity) {
+        filterBy[0] = { entityId: router.query?.entity };
+      }
+      getItems({
+        dir,
+        endDate,
+        offset,
+        searchTerm: searchTerm,
+        size,
+        sort,
+        startDate,
+        filterBy,
+      });
+      pushQuery(router, { search: searchTerm });
+    }, 500);
+
+    return () => clearTimeout(timeId);
+  }, [dir, endDate, offset, searchTerm, size, sort, startDate]);
 
   console.log(offset, "numberOfStockItems");
   useEffect(() => {
@@ -166,12 +179,18 @@ const StockitemsPage = (props) => {
 
   const onSubmit = async (values: any) => {
     try {
+      setIsLoading(true);
       const idx = stockitems?.findIndex((stockitem) => {
         console.log(stockitem?._id, selected, "picture");
         return stockitem?._id == selected?._id;
       });
       console.log(values?.picture, idx, "picture");
-
+      await axios.patch(
+        `/stock-item-data/update/${selected?._id}/${selected?.entityId}`,
+        {
+          picture: values?.picture,
+        }
+      );
       if (idx != -1) {
         let data = stockitems;
         data[idx].picture = values?.picture;
@@ -179,8 +198,8 @@ const StockitemsPage = (props) => {
 
         setStockItems([...data]);
       }
+
       onClose();
-      setIsLoading(true);
     } catch (error) {
       extractErrorMsgFromResponse(error);
     } finally {
@@ -188,51 +207,121 @@ const StockitemsPage = (props) => {
     }
   };
 
-  console.log(stockitems, "stockitems");
+  const isFeaturedToggle = async (itemData: any, isActive: boolean) => {
+    try {
+      setIsLoading(true);
+      const idx = stockitems?.findIndex((stockitem) => {
+        console.log(stockitem?._id, itemData, "picture");
+        return stockitem?._id == itemData?._id;
+      });
+      await axios.patch(
+        `/stock-item-data/me/updateIsFeatures/${itemData?._id}`,
+        {
+          isFeatures: isActive,
+        }
+      );
+      if (idx != -1) {
+        let data = stockitems;
+        data[idx].isFeatures = isActive;
+
+        setStockItems([...data]);
+      }
+    } catch (error) {
+      extractErrorMsgFromResponse(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   function checkURL(url: string) {
     return url?.match(/\.(jpeg|jpg|gif|png)$/) != null;
   }
   return (
     <AdminAuth>
       <CDashboardLayout title='Stockitems' description='Stockitems' count={""}>
-        <Flex p='10' flexWrap='wrap'>
-          {data
-            ?.filter((item) => checkURL(item?.picture))
-            ?.map((item) => {
-              return (
-                <Button
-                  shadow='xl'
-                  bg='white'
-                  _hover={{ bg: "white" }}
-                  title={`${item?.entityData[0]?.name} item#${item?.nameLocalized?.mainLanguage}`}
-                  key={item?._id}
-                  w='200px'
-                  h='200px'
-                  mr='5'
-                  mt='5'
-                  className='stock-container'
-                  position='relative'>
-                  <Image
-                    w='100%'
-                    h='100%'
-                    rounded='xl'
-                    src={item?.picture}
-                    alt={item?.nameLocalized?.mainLanguage}
-                    objectFit='contain'
-                    className='stock-image'
-                  />
-                  <button
-                    className='stock-middle'
-                    onClick={() => {
-                      setSelected(item);
-                      onOpen();
-                    }}>
-                    <div className='stock-text'>Edit</div>
-                  </button>
-                </Button>
-              );
-            })}
-        </Flex>
+        <Box p='10'>
+          <Flex justify='space-between'>
+            <Heading size='lg'>Stock Items</Heading>
+            <Box mr='5'>
+              <Input
+                w='300px'
+                placeholder='Search'
+                bg='white'
+                value={searchTerm}
+                onChange={(e) => {
+                  setPage(0);
+                  setSearchTerm(e.target.value);
+                }}
+              />
+            </Box>
+          </Flex>
+          <Flex flexWrap='wrap'>
+            {data?.length == 0 && <Text>No Items for this entity</Text>}
+            {data
+              // ?.filter((item) => checkURL(item?.picture))
+              ?.map((item) => {
+                const srcImg = checkURL(item?.picture)
+                  ? item?.picture
+                  : "/images/placeholder.png";
+                return (
+                  <Button
+                    shadow='xl'
+                    bg='white'
+                    _hover={{ bg: "white" }}
+                    title={`${item?.entityData[0]?.name} item#${item?.nameLocalized?.mainLanguage}`}
+                    key={item?._id}
+                    w='200px'
+                    h='200px'
+                    mr='5'
+                    mt='5'
+                    className='stock-container'
+                    position='relative'>
+                    <Image
+                      w='100%'
+                      h='100%'
+                      rounded='xl'
+                      src={srcImg}
+                      alt={item?.nameLocalized?.mainLanguage}
+                      objectFit='contain'
+                      className='stock-image'
+                    />
+
+                    <Box className='stock-middle'>
+                      <Box
+                        className='stock-text'
+                        onClick={() => {
+                          setSelected(item);
+                          onOpen();
+                        }}>
+                        <Icon
+                          as={AiOutlineEdit}
+                          color='yellow.500'
+                          w='8'
+                          h='8'
+                        />
+                      </Box>
+                      <Box
+                        className='stock-text'
+                        onClick={() => {
+                          isFeaturedToggle(item, !item?.isFeatures);
+                        }}>
+                        {item?.isFeatures ? (
+                          <Icon as={AiFillStar} color='red.500' w='8' h='8' />
+                        ) : (
+                          <Icon
+                            as={AiOutlineStar}
+                            color='red.500'
+                            w='8'
+                            h='8'
+                          />
+                        )}
+                      </Box>
+                    </Box>
+                  </Button>
+                );
+              })}
+          </Flex>
+        </Box>
+
         {numberOfStockItems > stockitems?.length && (
           <Flex w='100%' justify='center' align='center' mb='20'>
             <Button
