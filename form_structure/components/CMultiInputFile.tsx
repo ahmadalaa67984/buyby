@@ -73,7 +73,7 @@ const CMultiInputFile = ({
           errors={errors}
           register={register}
           text={text}
-          API='/uploads'
+          API='/upload'
           S3Bucket=''
           insertAction={(urlData, fileName) => {
             insert(parseInt(2, 10), {

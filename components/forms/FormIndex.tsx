@@ -316,24 +316,26 @@ const FormIndex = ({
               </Box>
             );
           }
-          ``;
+
           if (data.key === "file") {
+            console.log("picture");
             return (
-              <Grid templateColumns='repeat(2, 1fr)' gap={4} key={index}>
+              <Flex w='100%' gap={4} key={index}>
                 {withoutUpload === true
                   ? ""
                   : data.values?.map((multiData, multiIndex) => (
-                      <GridItem key={multiIndex}>
+                      <>
                         <CInputFile
+                          key={multiIndex}
                           setValue={setValue}
                           text=''
                           data={multiData}
                           errors={errors}
                           register={register}
                         />
-                      </GridItem>
+                      </>
                     ))}
-              </Grid>
+              </Flex>
             );
           }
           if (data.key === "multiFile") {

@@ -16,15 +16,23 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Progress,
   Radio,
   RadioGroup,
   Select,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import { CgEyeAlt, CgTrash } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +52,31 @@ import AdminAuth from "@/components/auth/AdminAuth";
 import { AiOutlineEdit } from "react-icons/ai";
 import { extractErrorMsgFromResponse } from "@/utils/apiHelpers";
 import { pushQuery } from "@/utils";
+import FormIndex from "@/components/forms/FormIndex";
+import * as Yup from "yup";
 
+const stockItemImageSchema = () => {
+  return Yup.object().shape({
+    picture: Yup.string().required("Mandatory Field"),
+  });
+};
+const stockItemImageSturcture = () => {
+  return [
+    {
+      key: "file",
+      values: [
+        {
+          type: "file",
+          kind: "file",
+          name: "picture",
+          label: "Image",
+          key: "file",
+          design: "inside",
+        },
+      ],
+    },
+  ];
+};
 const StockitemsPage = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -54,8 +86,8 @@ const StockitemsPage = (props) => {
   const [filterLength, setFilterLength] = useState(0);
   const [detailsModal, setDetailsModal] = useState(false);
   const [dir, setDir] = useState("desc");
-  const [selectedUser, setSelectedUser] = useState("");
-  const [deleteModal, setDeleteModal] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [uploadModal, setUploadModal] = useState(false);
   const [userStockitemsModal, setUserStockitemsModal] = useState(false);
   const [sort, setSort] = useState("updatedAt");
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -66,6 +98,8 @@ const StockitemsPage = (props) => {
   const [stockitems, setStockItems] = useState([]);
   const [numberOfStockItems, setNumberStockItems] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const refEditButton = useRef();
+
   const viewData = (data) => {
     setSelected(data);
   };
@@ -130,123 +164,32 @@ const StockitemsPage = (props) => {
     };
   });
 
-  const filterList = (
-    <Box p='5'>
-      <RadioGroup onChange={(e) => setDir(e)} defaultValue={dir}>
-        <Text as='b'>Sort by direction</Text>
-        <Stack direction='row' mt={"3"}>
-          <Radio value='asc'>Ascending</Radio>
-          <Radio value='desc'>Descending</Radio>
-        </Stack>
-      </RadioGroup>
-      <Divider p='2' />
-      <RadioGroup onChange={(e) => setSort(e)} defaultValue={sort} mt='2'>
-        <Text as='b'>Sort by time</Text>
-        <Stack direction='row' mt={"3"}>
-          <Radio value='createdAt'>By creation</Radio>
-          <Radio value='updatedAt'>By update</Radio>
-        </Stack>
-      </RadioGroup>
-      <Divider p='2' mb='2' />
-      <Text as='b'>Sort in range</Text>
-      <Box mt={"3"}>
-        <Text p='1'>From:</Text>
-        <Input
-          type={"date"}
-          onChange={(e) => setStartDate(e.target.valueAsDate)}
-        />
-      </Box>
-      <Box>
-        <Text p='1'>To:</Text>
-        <Input
-          type={"date"}
-          onChange={(e) => setEndDate(e.target.valueAsDate)}
-        />
-      </Box>
-      {/* <Box mt={4}>
-        <Text as='b' p={"1"}>
-          User Stockitems
-        </Text>
-        <Select
-          mt={2}
-          placeholder='Select user'
-          value={selectedUser}
-          onChange={(e) => {
-            setSelectedUser(e.target.value);
-            console.log(e.target.value);
-          }}>
-          {users?.map((user: any) => (
-            <option key={user?.userId} value={user?.userId}>
-              {user?.userName}
-            </option>
-          ))}
-        </Select>
-      </Box> */}
-    </Box>
-  );
+  const onSubmit = async (values: any) => {
+    try {
+      const idx = stockitems?.findIndex((stockitem) => {
+        console.log(stockitem?._id, selected, "picture");
+        return stockitem?._id == selected?._id;
+      });
+      console.log(values?.picture, idx, "picture");
 
-  const columns = [
-    {
-      Header: "Title",
-      accessor: "title",
-    },
-    {
-      Header: "Description",
-      accessor: "body",
-    },
-    {
-      Header: "Image URL",
-      accessor: "imageUrl",
-    },
-    {
-      Header: "",
-      accessor: "Actions",
-    },
-  ];
+      if (idx != -1) {
+        let data = stockitems;
+        data[idx].picture = values?.picture;
+        console.log(data, values?.picture, "stockitems");
 
-  const actions = (data) => {
-    return (
-      <Flex justify='space-between'>
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label='Title'
-            icon={<HiDotsVertical />}
-            size='sm'
-            fontSize='20px'
-            variant='outline'
-            border='none'
-          />
-          <MenuList p={0}>
-            <MenuItem
-              p={3}
-              fontWeight='black'
-              _hover={{
-                bg: "primary_variants.100",
-                color: "primary",
-              }}
-              icon={<CgEyeAlt fontSize='25px' color='#5211A5' />}
-              onClick={() => handleDetails()}>
-              See Details
-            </MenuItem>
-            <MenuItem
-              p={3}
-              fontWeight='black'
-              _hover={{
-                bg: "primary_variants.100",
-                color: "primary",
-              }}
-              icon={<CgTrash fontSize='25px' color='#5211A5' />}
-              onClick={() => setDeleteModal(true)}>
-              Delete
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </Flex>
-    );
+        setStockItems([...data]);
+      }
+      onClose();
+      setIsLoading(true);
+    } catch (error) {
+      extractErrorMsgFromResponse(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  function checkURL(url) {
+  console.log(stockitems, "stockitems");
+  function checkURL(url: string) {
     return url?.match(/\.(jpeg|jpg|gif|png)$/) != null;
   }
   return (
@@ -267,6 +210,7 @@ const StockitemsPage = (props) => {
                   h='200px'
                   mr='5'
                   mt='5'
+                  className='stock-container'
                   position='relative'>
                   <Image
                     w='100%'
@@ -275,7 +219,16 @@ const StockitemsPage = (props) => {
                     src={item?.picture}
                     alt={item?.nameLocalized?.mainLanguage}
                     objectFit='contain'
+                    className='stock-image'
                   />
+                  <button
+                    className='stock-middle'
+                    onClick={() => {
+                      setSelected(item);
+                      onOpen();
+                    }}>
+                    <div className='stock-text'>Edit</div>
+                  </button>
                 </Button>
               );
             })}
@@ -296,122 +249,57 @@ const StockitemsPage = (props) => {
             </Button>
           </Flex>
         )}
-        {/* <CTable
-          selectedData={viewData}
-          footerBtnTitle={false}
-          noSearchBar={false}
-          noFilter={false}
-          filterList={filterList}
-          filterLength={filterLength}
-          filterType={null}
-          Data={data}
-          Columns={columns}
-          Actions={<></>}
-          ActionsData={(data) => actions(data)}
-          Title='Stockitems Management'
-          subTitle={`Search stockitems.`}
-          btnTitle=''
-          placeHolder='Search for stockitems...'
-          setPage={setPage}
-          setPerPage={setPerPage}
-          currentpage={pageNumber}
-          setPageNumber={setPageNumber}
-          perPage={size}
-          totalPage={totalPage}
-          searchFn={
-            selectedUser ? getAllStockitemRequest : getAllStockitemRequest
-          }
-          idx={parseInt(router.query.idx)}
-          headerChildren={() => <></>}
-        /> */}
-        {/* {parseInt(router.query.idx) <= 0 ||
-      totalPage < parseInt(router.query.idx) ? (
-        <Flex
-          w='100%'
-          h='80vh'
-          align='center'
-          justify='center'
-          direction='column'>
-          <Heading size='lg'>Stockitems</Heading>
-          <Button
-            color='blue.500'
-            bg='blue500'
-            mt='5'
-            onClick={() => {
-              router.push({
-                pathname: router.pathname,
-                query: { ...router.query, idx: 1 },
-              });
-            }}>
-            Back to Stockitems
-          </Button>
-        </Flex>
-      ) : (
-        <Box bg='#f4f6f9' minH='600px'>
-          {data?.length === 0 && !isDataBefore && <StockitemsEmptyPage />}
-          {isLoading && <Progress size='xs' isIndeterminate />}
+        {isOpen && (
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Modal Title</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <FormIndex
+                  defaultValues={{
+                    picture: selected?.picture,
+                  }}
+                  withoutUpload={false}
+                  withoutTitles={false}
+                  withoutCheckboxs={false}
+                  withoutPassword={false}
+                  title={null}
+                  subTitle={null}
+                  schema={stockItemImageSchema}
+                  action={onSubmit}
+                  structure={stockItemImageSturcture()}>
+                  <Flex direction='column' mb='10'>
+                    <Box mt='4' borderTop='1px solid #DDD'>
+                      <Button
+                        variant='primary'
+                        color='white'
+                        type='submit'
+                        mt={4}
+                        hidden={true}
+                        ref={refEditButton}
+                        isLoading={false}>
+                        Save
+                      </Button>
+                    </Box>
+                  </Flex>
+                </FormIndex>
+              </ModalBody>
 
-          {isDataBefore && (
-            <CTable
-              selectedData={viewData}
-              footerBtnTitle={false}
-              noSearchBar={false}
-              noFilter={false}
-              filterList={filterList}
-              filterLength={filterLength}
-              filterType={null}
-              Data={data}
-              Columns={columns}
-              Actions={<></>}
-              ActionsData={(data) => actions(data)}
-              Title='Stockitems Management'
-              subTitle={`Create, search, view and delete stockitems.`}
-              btnTitle=''
-              placeHolder='Search for stockitems...'
-              setPage={setPage}
-              setPerPage={setPerPage}
-              currentpage={pageNumber}
-              setPageNumber={setPageNumber}
-              perPage={size}
-              totalPage={
-                // Math.ceil(tablesNumber.length / 10)
-                //   ? Math.ceil(tablesNumber.length / 10)
-                //   : 1
-                2
-              }
-              searchFn={getAllStockitemRequest}
-              idx={parseInt(router.query.idx)}
-              headerChildren={() => (
-                <>
-                  <CreateButton
-                    btnTitle='Create Stockitem'
-                    onClick={() =>
-                      dispatch(drawerActionToggle(true, "New", "stockitem"))
-                    }
-                  />
-                </>
-              )}
-            />
-          )}
-        </Box>
-      )} */}
-        {/* <ActionsStockitems /> */}
-        {/* <DeleteModel
-          name={singleStockitem?.action}
-          deleteModal={deleteModal}
-          setDeleteModal={setDeleteModal}
-          onSubmit={onSubmitDelete}
-        /> */}
-        {/* <StockitemDetailsModal
-          detailsModal={detailsModal}
-          setDetailsModal={setDetailsModal}
-          item={singleStockitem}
-        /> */}
-        {/* <UserStockitemsModal
-        userStockitemsModal={userStockitemsModal}
-        setUserStockitemsModal={setUserStockitemsModal}
-        userStockitems={userStockitems}
-      /> */}
+              <ModalFooter>
+                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                  Close
+                </Button>
+                <Button
+                  isLoading={isLoading}
+                  variant='ghost'
+                  onClick={() => refEditButton?.current?.click()}>
+                  Submit
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        )}
       </CDashboardLayout>
     </AdminAuth>
   );

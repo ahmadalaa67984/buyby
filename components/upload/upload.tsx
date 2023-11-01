@@ -34,6 +34,7 @@ import { IoClose } from "react-icons/io5";
 import { MdCloudUpload } from "react-icons/md";
 import { extractErrorMsgFromResponse } from "@/utils/apiHelpers";
 import { humanFileSize } from "@/utils";
+import Cookies from "js-cookie";
 
 const Upload = (props) => {
   // const auth = useSelector((state: RootState) => state.auth);
@@ -181,7 +182,7 @@ const Upload = (props) => {
         },
         headers: {
           "Content-Type": file.type,
-          Authorization: `Bearer ${auth.token}`,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       });
       setUrl(res.data.url);

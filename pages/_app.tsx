@@ -20,7 +20,28 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
 export default function App({ Component, pageProps }: AppProps) {
   console.log(process.env.BACKEND_URL, "BACKEND_URL");
   const [showChild, setShowChild] = useState(false);
+  axios.interceptors.response.use(
+    function (response) {
+      return response;
+    },
+    function (error) {
+      console.error(error, "error");
+      if (
+        error?.response?.status === 401 &&
+        !window.location.pathname.includes("/auth")
+      ) {
+        Cookies.remove("token");
 
+        window.location.href = `/auth/signin`;
+        return Promise.reject(error);
+      } else if (error?.response?.status > 499) {
+        // window.location.href = `/${router.locale}/500`;
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(error);
+      }
+    }
+  );
   useEffect(() => {
     setShowChild(true);
   }, []);
