@@ -11,6 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 
 axios.defaults.baseURL = process.env.BACKEND_URL;
 axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(

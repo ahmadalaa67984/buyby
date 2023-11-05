@@ -173,6 +173,10 @@ const BusinessAccounts = (props) => {
       Header: "Address",
       accessor: "address",
     },
+    {
+      Header: "ُEmail",
+      accessor: "email",
+    },
     // {
     //   Header: "Type",
     //   accessor: "type",
@@ -181,10 +185,10 @@ const BusinessAccounts = (props) => {
       Header: "Contact Phone",
       accessor: "cphone",
     },
-    {
-      Header: "Register Number",
-      accessor: "rnumber",
-    },
+    // {
+    //   Header: "Register Number",
+    //   accessor: "rnumber",
+    // },
     {
       Header: "Activation",
       accessor: "actions",

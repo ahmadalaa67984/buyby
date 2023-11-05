@@ -106,12 +106,12 @@ export const halfCircleChartProp = (percent: any) => ({
   },
 });
 
-export const lineChartProps = (labels: any) => ({
+export const lineChartProps = (labels: any, data?: any, symbol = "") => ({
   series: [
     {
       name: "",
       type: "line",
-      data: [100, 500, 1000, 2500, 1000, 500, 300, 500, 4000, 1500, 500, 1000],
+      data: data ? data : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     },
   ],
   options: {
@@ -157,7 +157,7 @@ export const lineChartProps = (labels: any) => ({
       y: {
         formatter: function (y: any) {
           if (typeof y !== "undefined") {
-            return y.toFixed(0) + " $";
+            return y.toFixed(0) + ` ${symbol}`;
           }
           return y;
         },
