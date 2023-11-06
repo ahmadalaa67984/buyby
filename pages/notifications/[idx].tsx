@@ -18,6 +18,7 @@ import {
   Select,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -42,10 +43,14 @@ import axios from "axios";
 import NotificationsEmptyPage from "@/components/tablesData/notifications/NotificationsEmptyPage";
 import { INotification } from "@/modules/notifications/interface";
 import AdminAuth from "@/components/auth/AdminAuth";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { extractErrorMsgFromResponse } from "@/utils/apiHelpers";
+import ActionsSMS from "@/components/drawers/notifications/ActionsSMS";
 
 const NotificationsPage = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [offset, setPage] = useState(0);
   const [size, setPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
@@ -312,12 +317,31 @@ const NotificationsPage = (props) => {
           idx={parseInt(router.query.idx)}
           headerChildren={() => (
             <>
-              <CreateButton
+              <Menu>
+                <MenuButton
+                  size='lg'
+                  bg='primary'
+                  color='white'
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}>
+                  Create
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    onClick={() =>
+                      dispatch(drawerActionToggle(true, "New", "notification"))
+                    }>
+                    Notification
+                  </MenuItem>
+                  <MenuItem onClick={onOpen}>SMS</MenuItem>
+                </MenuList>
+              </Menu>
+              {/* <CreateButton
                 btnTitle='Create Notification'
                 onClick={() =>
                   dispatch(drawerActionToggle(true, "New", "notification"))
                 }
-              />
+              /> */}
             </>
           )}
         />
@@ -393,6 +417,9 @@ const NotificationsPage = (props) => {
         </Box>
       )} */}
         <ActionsNotifications />
+        {isOpen && (
+          <ActionsSMS isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+        )}
         <DeleteModel
           name={singleNotification?.action}
           deleteModal={deleteModal}
