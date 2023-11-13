@@ -46,6 +46,7 @@ import AdminAuth from "@/components/auth/AdminAuth";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { extractErrorMsgFromResponse } from "@/utils/apiHelpers";
 import ActionsSMS from "@/components/drawers/notifications/ActionsSMS";
+import { pushQuery } from "@/utils";
 
 const NotificationsPage = (props) => {
   const router = useRouter();
@@ -89,7 +90,7 @@ const NotificationsPage = (props) => {
             id: selectedUser,
             formData: {
               offset: (parseInt(router.query.idx) - 1) * 10,
-              size,
+              size: parseInt(router?.query?.size || size),
               searchTerm: router.query.search,
               dir,
               sort,
@@ -102,7 +103,7 @@ const NotificationsPage = (props) => {
         dispatch(
           getAllNotificationsRequest({
             offset: (parseInt(router.query.idx) - 1) * 10,
-            size,
+            size: parseInt(router?.query?.size || size),
             dir,
             sort,
             searchTerm: router.query.search,
@@ -122,6 +123,7 @@ const NotificationsPage = (props) => {
     router.query.idx,
     size,
     router.query.search,
+    router.query.size,
   ]);
 
   const onSubmitDelete = () => {
@@ -139,6 +141,8 @@ const NotificationsPage = (props) => {
       id: notify?._id,
       title: notify?.notificationData?.title,
       body: notify?.notificationData?.body,
+      date: new Date(notify?.createdAt)?.toLocaleDateString(),
+
       imageUrl: (
         <Box color='blue.500'>
           <a
@@ -175,6 +179,18 @@ const NotificationsPage = (props) => {
           <Radio value='updatedAt'>By update</Radio>
         </Stack>
       </RadioGroup>
+      <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
       <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
@@ -227,6 +243,10 @@ const NotificationsPage = (props) => {
       accessor: "imageUrl",
     },
     {
+      Header: "Date Created",
+      accessor: "date",
+    },
+    {
       Header: "",
       accessor: "Actions",
     },
@@ -277,9 +297,7 @@ const NotificationsPage = (props) => {
   console.log({ selected });
   console.log({ props, numberOfNotifications });
 
-  const totalPage = Math.ceil(numberOfNotifications / 10)
-    ? Math.ceil(numberOfNotifications / 10)
-    : 1;
+  const totalPage = Math.ceil(numberOfNotifications - data?.length) + 1 || 1;
 
   return (
     <AdminAuth>

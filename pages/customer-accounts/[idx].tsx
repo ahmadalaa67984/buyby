@@ -13,6 +13,7 @@ import { ICustomer } from "@/modules/customer-accs/interface";
 import { drawerActionToggle } from "@/modules/drawer/Actions";
 import { activateUserRequest } from "@/modules/super-admin/Actions";
 import { RootState } from "@/services/combinedReducers";
+import { pushQuery } from "@/utils";
 import {
   Box,
   Button,
@@ -71,7 +72,7 @@ const CustomerAccounts = (props) => {
     dispatch(
       getAllCustomerRequest({
         offset: (parseInt(router.query.idx) - 1) * 10,
-        size,
+        size: parseInt(router?.query?.size || size),
         searchTerm: router.query.search,
       })
     );
@@ -123,6 +124,8 @@ const CustomerAccounts = (props) => {
       email: user?.email,
       phone: user?.phoneNumber,
       status: user?.status,
+      date: new Date(user?.createdAt)?.toLocaleDateString(),
+
       rp: (
         <Box color='blue.500'>
           <FormControl display='flex' alignItems='center'>
@@ -175,6 +178,18 @@ const CustomerAccounts = (props) => {
         </Stack>
       </RadioGroup>
       <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
+      <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
         <Text p='1'>From:</Text>
@@ -213,6 +228,10 @@ const CustomerAccounts = (props) => {
     {
       Header: "Activation",
       accessor: "actions",
+    },
+    {
+      Header: "Date Created",
+      accessor: "date",
     },
   ];
 
@@ -261,10 +280,8 @@ const CustomerAccounts = (props) => {
   // };
 
   console.log({ customerAccs });
-  const totalPage = Math.ceil(numberOfCustomerAcc / 10)
-    ? Math.ceil(numberOfCustomerAcc / 10)
-    : 1;
 
+  const totalPage = Math.ceil(numberOfCustomerAcc - data?.length) + 1 || 1;
   return (
     <AdminAuth>
       <CDashboardLayout

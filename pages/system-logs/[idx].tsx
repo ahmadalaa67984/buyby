@@ -16,6 +16,7 @@ import {
   Progress,
   Radio,
   RadioGroup,
+  Select,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -34,6 +35,7 @@ import DeleteModel from "@/components/core/modals/DeleteModel";
 import DetailsModal from "@/components/core/modals/DetailsModal";
 import { ISysLog } from "@/modules/system-logs/interface";
 import AdminAuth from "@/components/auth/AdminAuth";
+import { pushQuery } from "@/utils";
 
 const SystemLogs = (props) => {
   const router = useRouter();
@@ -68,7 +70,7 @@ const SystemLogs = (props) => {
       dispatch(
         getAllSystemLogsRequest({
           offset: (parseInt(router.query.idx) - 1) * 10,
-          size,
+          size: parseInt(router?.query?.size || size),
           searchTerm: router.query.search,
           dir,
           sort,
@@ -87,6 +89,7 @@ const SystemLogs = (props) => {
     size,
     router.query.idx,
     router.query.search,
+    router.query.size,
   ]);
 
   const onSubmitDelete = () => {
@@ -130,6 +133,18 @@ const SystemLogs = (props) => {
           <Radio value='updatedAt'>By update</Radio>
         </Stack>
       </RadioGroup>
+      <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
       <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
@@ -220,9 +235,9 @@ const SystemLogs = (props) => {
   };
 
   // const totalPage = 2;
-  const totalPage = Math.ceil(numberOfSystemLog / 10)
-    ? Math.ceil(numberOfSystemLog / 10)
-    : 1;
+
+  const totalPage = Math.ceil(numberOfSystemLog - data?.length) + 1 || 1;
+
   console.log({
     selected,
     totalPage,

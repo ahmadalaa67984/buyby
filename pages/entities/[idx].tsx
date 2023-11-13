@@ -37,6 +37,7 @@ import { drawerActionToggle } from "@/modules/drawer/Actions";
 import CreateButton from "@/components/core/buttons/CreateButton";
 import axios from "axios";
 import AdminAuth from "@/components/auth/AdminAuth";
+import { pushQuery } from "@/utils";
 
 const EntitiesPage = (props) => {
   const router = useRouter();
@@ -68,7 +69,7 @@ const EntitiesPage = (props) => {
     dispatch(
       getAllEntityRequest({
         offset: (parseInt(router.query.idx) - 1) * 10,
-        size,
+        size: parseInt(router?.query?.size || size),
         searchTerm: router.query.search,
         dir,
         sort,
@@ -85,6 +86,7 @@ const EntitiesPage = (props) => {
     size,
     sort,
     startDate,
+    router.query.size,
   ]);
 
   useEffect(() => {
@@ -106,6 +108,7 @@ const EntitiesPage = (props) => {
       name: entity?.name,
       phoneNumber: entity?.phoneNumber,
       type: entity?.entityType == "STORE" ? "Store" : "Merchant",
+      date: new Date(entity?.createdAt)?.toLocaleDateString(),
       updateDate: new Date(entity?.updatedAt)?.toLocaleDateString(),
       image: (
         <Image
@@ -137,6 +140,18 @@ const EntitiesPage = (props) => {
           <Radio value='updatedAt'>By update</Radio>
         </Stack>
       </RadioGroup>
+      <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
       <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
@@ -200,7 +215,10 @@ const EntitiesPage = (props) => {
       Header: "Update Date",
       accessor: "updateDate",
     },
-
+    {
+      Header: "Date Created",
+      accessor: "date",
+    },
     {
       Header: "",
       accessor: "Actions",
@@ -243,9 +261,7 @@ const EntitiesPage = (props) => {
   console.log({ selected });
   console.log({ props, numberOfEntities });
 
-  const totalPage = Math.ceil(numberOfEntities / 10)
-    ? Math.ceil(numberOfEntities / 10)
-    : 1;
+  const totalPage = Math.ceil(numberOfEntities - data?.length) + 1 || 1;
 
   return (
     <AdminAuth>

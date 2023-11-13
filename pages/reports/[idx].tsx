@@ -114,6 +114,7 @@ const Reports = (props) => {
       email: user?.email,
       phone: user?.phoneNumber,
       status: user?.status,
+      date: new Date(user?.createdAt)?.toLocaleDateString(),
     };
   });
 
@@ -149,6 +150,10 @@ const Reports = (props) => {
     {
       Header: "Phone Number",
       accessor: "phone",
+    },
+    {
+      Header: "Date Created",
+      accessor: "date",
     },
     // {
     //   Header: "",

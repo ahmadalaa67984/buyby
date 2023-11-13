@@ -46,6 +46,7 @@ import DetailsModal from "@/components/core/modals/DetailsModal";
 import BusinessAccountModal from "@/components/core/modals/BusinessAccountModal";
 import AdminAuth from "@/components/auth/AdminAuth";
 import { activateUserRequest } from "@/modules/super-admin/Actions";
+import { pushQuery } from "@/utils";
 
 const BusinessAccounts = (props) => {
   const router = useRouter();
@@ -73,7 +74,7 @@ const BusinessAccounts = (props) => {
     dispatch(
       getAllBusinessAccountsRequest({
         offset: (parseInt(router.query.idx) - 1) * 10,
-        size,
+        size: parseInt(router?.query?.size || size),
         searchTerm: router.query.search,
       })
     );
@@ -109,6 +110,7 @@ const BusinessAccounts = (props) => {
       // type: b?.subscriptionType,
       cphone: b?.phoneNumber,
       rnumber: b?.registrationNumber,
+      date: new Date(b?.createdAt)?.toLocaleDateString(),
       actions: (
         <FormControl display='flex' gridGap={4} alignItems='center' mt={4}>
           <Switch
@@ -146,6 +148,18 @@ const BusinessAccounts = (props) => {
         </Stack>
       </RadioGroup>
       <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
+      <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
         <Text p='1'>From:</Text>
@@ -170,13 +184,16 @@ const BusinessAccounts = (props) => {
       accessor: "bname",
     },
     {
-      Header: "Address",
-      accessor: "address",
+      Header: `Price (total=${data?.reduce(
+        (accumulator, obj) => accumulator + obj?.price,
+        1
+      )})`,
+      accessor: "price",
     },
-    {
-      Header: "ُEmail",
-      accessor: "email",
-    },
+    // {
+    //   Header: "ُEmail",
+    //   accessor: "email",
+    // },
     // {
     //   Header: "Type",
     //   accessor: "type",
@@ -192,6 +209,10 @@ const BusinessAccounts = (props) => {
     {
       Header: "Activation",
       accessor: "actions",
+    },
+    {
+      Header: "Date Created",
+      accessor: "date",
     },
     {
       Header: "",
@@ -243,10 +264,8 @@ const BusinessAccounts = (props) => {
     );
   };
 
-  console.log({ businessAccs, singleUser });
-  const totalPage = Math.ceil(numberOfBusinessAcc / 10)
-    ? Math.ceil(numberOfBusinessAcc / 10)
-    : 1;
+  const totalPage = Math.ceil(numberOfBusinessAcc - data?.length) + 1 || 1;
+  console.log(totalPage, "totalPage");
 
   return (
     <AdminAuth>
@@ -283,6 +302,7 @@ const BusinessAccounts = (props) => {
 
             {isDataBefore && (
               <CTable
+                isLoading={isLoading}
                 selectedData={viewData}
                 footerBtnTitle={false}
                 noSearchBar={false}

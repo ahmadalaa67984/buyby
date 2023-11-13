@@ -121,7 +121,7 @@ const CTable = ({
 
   return (
     <Flex justifyContent={"center"} alignItems='center' p={8} bg='#F3F2F7'>
-      <Container maxW='container'>
+      <Container maxW='container' overflowX='scroll'>
         <Box mb={10}>
           <CHeader
             filterList={filterList}
@@ -141,74 +141,78 @@ const CTable = ({
             {headerChildren()}
           </CHeader>
         </Box>
-        <Table {...getTableProps()} bg='white' mb='6' borderRadius='6px'>
-          <Thead bg='gray.50' color='#645f65'>
-            {headerGroups?.map((headerGroup, index) => (
-              <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                {headerGroup.headers?.map((column, idx) => (
-                  <Th
-                    key={idx}
-                    bg='gray.50'
-                    {...column.getHeaderProps(
-                      column.Header === "" ? "" : column.getSortByToggleProps()
-                    )}>
-                    <Flex>
-                      {Data.length > 0 ||
-                      router.pathname.includes("profile-management") ? (
-                        <>
-                          {column.render("Header")}
-                          {column.Header === "" ? (
-                            ""
-                          ) : (
-                            <chakra.span
-                              style={{
-                                paddingLeft: "10px",
-                                margin: "-1px",
-                              }}
-                              display='inline-block'>
-                              {column.isSorted ? (
-                                column.isSortedDesc ? (
-                                  <TriangleDownIcon aria-label='sorted descending' />
-                                ) : (
-                                  <TriangleUpIcon aria-label='sorted ascending' />
-                                )
-                              ) : (
-                                <TiArrowUnsorted fontSize='18px' />
-                              )}
-                            </chakra.span>
-                          )}
-                        </>
-                      ) : (
-                        ""
-                      )}
-                    </Flex>
-                  </Th>
-                ))}
-              </Tr>
-            ))}
-          </Thead>
-          <Tbody {...getTableBodyProps()} color='black'>
-            {page?.map((row, index) => {
-              prepareRow(row);
-
-              return (
-                <Tr
-                  key={index}
-                  {...row.getRowProps()}
-                  onClick={() => selectedData(row.original)}>
-                  {row.cells?.map((cell, idx) => (
-                    <Td
+        {!isLoading && (
+          <Table {...getTableProps()} bg='white' mb='6' borderRadius='6px'>
+            <Thead bg='gray.50' color='#645f65'>
+              {headerGroups?.map((headerGroup, index) => (
+                <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                  {headerGroup.headers?.map((column, idx) => (
+                    <Th
                       key={idx}
-                      {...cell.getCellProps()}
-                      isNumeric={cell.column.isNumeric}>
-                      {cell.render("Cell")}
-                    </Td>
+                      bg='gray.50'
+                      {...column.getHeaderProps(
+                        column.Header === ""
+                          ? ""
+                          : column.getSortByToggleProps()
+                      )}>
+                      <Flex>
+                        {Data.length > 0 ||
+                        router.pathname.includes("profile-management") ? (
+                          <>
+                            {column.render("Header")}
+                            {column.Header === "" ? (
+                              ""
+                            ) : (
+                              <chakra.span
+                                style={{
+                                  paddingLeft: "10px",
+                                  margin: "-1px",
+                                }}
+                                display='inline-block'>
+                                {column.isSorted ? (
+                                  column.isSortedDesc ? (
+                                    <TriangleDownIcon aria-label='sorted descending' />
+                                  ) : (
+                                    <TriangleUpIcon aria-label='sorted ascending' />
+                                  )
+                                ) : (
+                                  <TiArrowUnsorted fontSize='18px' />
+                                )}
+                              </chakra.span>
+                            )}
+                          </>
+                        ) : (
+                          ""
+                        )}
+                      </Flex>
+                    </Th>
                   ))}
                 </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
+              ))}
+            </Thead>
+            <Tbody {...getTableBodyProps()} color='black'>
+              {page?.map((row, index) => {
+                prepareRow(row);
+
+                return (
+                  <Tr
+                    key={index}
+                    {...row.getRowProps()}
+                    onClick={() => selectedData(row.original)}>
+                    {row.cells?.map((cell, idx) => (
+                      <Td
+                        key={idx}
+                        {...cell.getCellProps()}
+                        isNumeric={cell.column.isNumeric}>
+                        {cell.render("Cell")}
+                      </Td>
+                    ))}
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        )}
         <CFooter
           setPageNumber={setPageNumber}
           footerBtnTitle={footerBtnTitle}

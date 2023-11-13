@@ -18,6 +18,7 @@ import {
   Progress,
   Radio,
   RadioGroup,
+  Select,
   Stack,
   Switch,
   Text,
@@ -30,6 +31,7 @@ import SuperAdminEmptyPage from "@/components/tablesData/super-admin/SuperAdmins
 import ActionsSuperAdmin from "@/components/drawers/admins/ActionsSuperAdmin";
 import { ISuperAdmin } from "@/modules/super-admin/interface";
 import AdminAuth from "@/components/auth/AdminAuth";
+import { pushQuery } from "@/utils";
 
 const SuperAdminsPage = (props) => {
   const router = useRouter();
@@ -57,7 +59,7 @@ const SuperAdminsPage = (props) => {
     dispatch(
       getAllSuperAdminsRequest({
         offset: (parseInt(router.query.idx) - 1) * 10,
-        size,
+        size: parseInt(router?.query?.size || size),
         searchTerm: router.query.search,
       })
     );
@@ -85,6 +87,8 @@ const SuperAdminsPage = (props) => {
       //   name: admin?.name,
       email: admin?.email,
       phone: admin?.phoneNumber,
+      date: new Date(admin?.createdAt)?.toLocaleDateString(),
+
       actions: (
         <FormControl display='flex' gridGap={4} alignItems='center' mt={4}>
           <Switch
@@ -122,6 +126,18 @@ const SuperAdminsPage = (props) => {
         </Stack>
       </RadioGroup>
       <Divider p='2' mb='2' />
+      <Text as='b'>Size</Text>
+      <Select
+        value={parseInt(router?.query?.size || 10)}
+        onChange={(e) => {
+          pushQuery(router, { size: e.target.value });
+        }}>
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </Select>
+      <Divider p='2' mb='2' />
       <Text as='b'>Sort in range</Text>
       <Box mt={"3"}>
         <Text p='1'>From:</Text>
@@ -157,11 +173,14 @@ const SuperAdminsPage = (props) => {
       Header: "Activation",
       accessor: "actions",
     },
+    {
+      Header: "Date Created",
+      accessor: "date",
+    },
   ];
 
-  const totalPage = Math.ceil(numberOfSuperAdmins / 10)
-    ? Math.ceil(numberOfSuperAdmins / 10)
-    : 1;
+  const totalPage = Math.ceil(numberOfSuperAdmins - data?.length) + 1 || 1;
+
   console.log({ superAdmins, numberOfSuperAdmins });
 
   return (
