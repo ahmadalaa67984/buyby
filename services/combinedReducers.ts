@@ -12,6 +12,7 @@ import authReducer from "../modules/auth/Reducer";
 import userReducer from "../modules/user/Reducer";
 import stockitemsReducer from "../modules/stockitems/Reducer";
 import entitiesReducer from "../modules/entities/Reducer";
+import tutorialsReducer from "../modules/tutorials/Reducer";
 
 const rootReducer = combineReducers({
   drawer: drawerReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   stockitems: stockitemsReducer,
   entities: entitiesReducer,
+  tutorial: tutorialsReducer,
 });
 
 export default rootReducer;

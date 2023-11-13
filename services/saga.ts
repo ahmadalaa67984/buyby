@@ -11,6 +11,7 @@ import authSagas from "../modules/auth/Saga";
 import userSagas from "../modules/user/Saga";
 import stockitemsSagas from "../modules/stockitems/Saga";
 import entitiesSagas from "../modules/entities/Saga";
+import tutorialSagas from "../modules/tutorials/Saga";
 
 export default function* rootSaga() {
   yield fork(sysLogSagas);
@@ -25,4 +26,5 @@ export default function* rootSaga() {
   yield fork(userSagas);
   yield fork(stockitemsSagas);
   yield fork(entitiesSagas);
+  yield fork(tutorialSagas);
 }

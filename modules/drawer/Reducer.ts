@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     isOpen: false,
     type: "",
     component: "",
+    defaultValue: "",
   } as IDrawer,
 };
 

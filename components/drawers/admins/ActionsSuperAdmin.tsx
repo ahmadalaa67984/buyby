@@ -134,7 +134,7 @@ const ActionsSuperAdmin = () => {
               <FormControl>
                 <FormLabel>Phone Number</FormLabel>
                 <Input
-                  type='number'
+                  type='text'
                   placeholder='Phone Number'
                   name='phoneNumber'
                   value={phoneNumber}
