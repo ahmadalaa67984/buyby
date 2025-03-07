@@ -1,0 +1,52 @@
+.invoice-print-container {
+    font-size: 18px;
+    font-family: 'Times New Roman';
+}
+.invoice-print-container .dot-line {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+    border-style: dotted;
+}
+.invoice-print-container td.description,
+.invoice-print-container th.description {
+    /* width: 40mm;
+    max-width: 60mm; */
+    width: 160px;
+    text-align: left;
+    font-size: 18px;
+}
+.invoice-print-container td.quantity,
+.invoice-print-container th.quantity {
+    /* width: 20mm;
+    max-width: 40mm; */
+    width: 160px;
+    word-break: break-all;
+    text-align: left;
+    font-size: 18px;
+}
+.invoice-print-container td.price_data,
+.invoice-print-container th.price_data {
+    /* width: 20mm;
+    max-width: 40mm; */
+    width: 160px;
+    word-break: break-all;
+    text-align: left;
+    font-size: 18px;
+}
+.invoice-print-container .centered {
+    text-align: center;
+    align-content: center;
+    font-size: 18px;
+    /* border-bottom: 1px solid black;
+        border-collapse: collapse;
+        border-style: dotted; */
+}
+.invoice-print-container .ticket {
+    /* width: 80mm;
+    max-width: 80mm; */
+    font-size: 18px;
+}
+.invoice-print-container img {
+    max-width: inherit;
+    width: inherit;
+}

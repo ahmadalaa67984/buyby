@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Receipt</title>
+  </head>
+  <body>
+    <div class="invoice-print-container">
+      <div class="ticket">
+        <img src="./logo_outline_2.png" alt="Logo" width="100" height="100" />
+        <p class="centered">
+          Invoice #: {{ID}}
+          <br />
+          {{restaurantName}}
+          <br />
+          {{branchAddress}} <br />
+          Tel: {{branchPhone}}
+        </p>
+        <br />
+        <br />
+        <p>
+          Date: {{date}}&nbsp&nbsp{{time}}
+          <br />
+          Table: {{tableName}} {{tableSeats}} <br />
+          Cust .Name: {{name}}
+        </p>
+        <br />
+        <br />
+        <table>
+          <thead>
+            <tr>
+              <th class="description">ITEM NAME</th>
+              <th class="quantity">QTY</th>
+              <th class="price_data">AMOUNT</th>
+              <th class="price_data">Addons</th>
+              <th class="price_data">Takeoffs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each items}}
+            <tr>
+              <td class="description">{{this.name}}</td>
+              <td class="quantity">{{this.quantity}}</td>
+              <td class="price_data">{{this.price}}</td>
+
+              <td class="price_data">
+                {{#each this.addons}}- {{this.stockitem.nameLocalized.mainLanguage}}&nbsp;{{/each}}
+              </td>
+
+              <td class="price_data">
+                {{#each this.takeoffs}}-
+                {{this.stockitem.nameLocalized.mainLanguage}}&nbsp;{{/each}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="description">TAX</td>
+              <td class="quantity"></td>
+              <td class="price_data">{{vat}}</td>
+            </tr>
+            <tr>
+              <td class="description">SERVICE</td>
+              <td class="quantity"></td>
+              <td class="price_data">{{service}}</td>
+            </tr>
+            <tr>
+              <td class="description">Tip</td>
+              <td class="quantity"></td>
+              <td class="price_data">{{tip}}</td>
+            </tr>
+            <tr>
+              <td class="description">TOTAL</td>
+              <td class="quantity"></td>
+              <td class="price_data">{{amount}}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <br />
+        <br />
+        <p class="centered">
+          Thanks for your purchase!
+          <br />
+          food2bits.com
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

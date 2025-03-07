@@ -1,0 +1,47 @@
+# add git-ignore syntax here of things you don't want copied into docker image
+
+tmp
+.cache
+.github
+.circle
+.npmrc
+.travis.yml
+greenkeeper.json
+docker-compose*.yml
+*.md
+Jenkinsfile
+rebuild.sh
+
+# IDEs and editors
+.idea
+.vscode
+.project
+.classpath
+*.launch
+.settings/
+.editorconfig
+
+# e2e
+test
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Versioning and metadata
+.git
+.gitignore
+.dockerignore
+
+# Build dependencies
+dist
+node_modules
+coverage
+
+# Environment (contains sensitive data)
+.env*
+
+# Files not required for production
+Dockerfile
+README.md
+sandbox

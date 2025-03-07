@@ -1,0 +1,4 @@
+ItemName,Description,Type,StorageUnit,PricingMethod,BatchesType,PurchasePrice,SKU,MinQty,MaxQty,MinQtyAlert,MaxQtyAlert,ReorderPoint,qtyToReorder,unCodedItem,ImageURL
+Mango,,CONSUMABLES,Kilogram,FIFo,batch,45,,20,50,,,10,10,TRUE,
+tomatoe,,,,expiry,expiry,6,2,,10,40,,,5,20,FALSE,
+carrot,,,,lifo,none,4,3,,10,30,,,5,15,TRUE,

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: buyby-api
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 5009:5009
+    networks:
+      - overlay
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/dist
+    healthcheck:
+      test: ['CMD', 'node', 'healthcheck']
+      interval: 30s
+      start_period: 60s
+      timeout: 2s
+      retries: 3
+  db:
+    image: mongo:4.4.4
+    container_name: buyby-db
+    restart: always
+    ports:
+      - 27018:27017
+    environment:
+      - MONGO_INITDB_DATABASE=cauris
+    volumes:
+      - shared_database:/data/db
+      # this is an example of how to seed data in mongo containers. The Docker Hub mongo README
+      # explains that any data dropped into the docker-entrypoint-initdb.d directory will be injected
+      # into mongo at startup.
+      - ./database/seed.js:/docker-entrypoint-initdb.d/seed.js
+    # docker-compose will wait for a healthy mongo before it starts node
+    healthcheck:
+      test: '[ `echo ''db.runCommand("ping").ok'' | mongo localhost/cauris --quiet` ] && echo 0 || echo 1'
+      interval: 5s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
+    networks:
+      - overlay
+
+volumes:
+  shared_database:
+
+networks:
+  overlay:
+    driver: bridge
